@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0f2744">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gabelle">
+<meta name="application-name" content="Gabelle">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="description" content="Gabelle Matériaux de Construction — Gonaïves, Haïti">
+<link rel="apple-touch-icon" id="pwa-apple-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f2744'/><text y='54' x='50' text-anchor='middle' font-size='42' font-family='Arial Black,sans-serif' font-weight='900' fill='%23e8620a'>G</text><text y='72' x='50' text-anchor='middle' font-size='14' font-family='Arial,sans-serif' font-weight='700' fill='%23ffffff'>Gabelle</text></svg>">
+<link rel="manifest" id="pwa-manifest-link">
+<title>GABELLE — Matériaux de Construction</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0f2744;--nv2:#1a3a5c;--nv3:#081b30;--or:#e8620a;--or2:#ff7520;--od:rgba(232,98,10,.14);--gr:#1a9e5e;--grd:rgba(26,158,94,.15);--rd:#e03535;--rdd:rgba(224,53,53,.15);--yw:#d97706;--ywd:rgba(217,119,6,.15);--bl:#1d6fb3;--bld:rgba(29,111,179,.15);--pu:#7c3aed;--pud:rgba(124,58,237,.15);--sh:0 4px 16px rgba(0,0,0,.35);--shx:0 20px 60px rgba(0,0,0,.5);--r:10px;--rl:14px;--rs:6px;}
+[data-theme=dark]{--bg:#0a1628;--sur:#1a2e48;--sur2:#1f3555;--sur3:#243c62;--bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.13);--t1:#e8f0fe;--t2:#94a3b8;--tm:#5a7090;}
+[data-theme=light]{--bg:#f0f4f8;--sur:#fff;--sur2:#f8fafc;--sur3:#f0f4f8;--bd:rgba(0,0,0,.08);--bd2:rgba(0,0,0,.13);--t1:#0f2744;--t2:#3d5275;--tm:#8898b3;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-thumb{background:var(--nv2);border-radius:10px;}
+
+/* ═══ LOGIN ═══ */
+#login{position:fixed;inset:0;background:linear-gradient(135deg,var(--nv3),var(--nv));display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;}
+.lw{width:100%;max-width:420px;}
+.ll{text-align:center;margin-bottom:28px;}
+.ll img{width:85px;height:85px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(232,98,10,.4));}
+.lb{font-family:"Barlow Condensed",sans-serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:3px;margin-top:10px;}
+.ls{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.lc{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:8px;}
+.lcb{background:var(--sur);border:2px solid var(--bd2);border-radius:var(--rl);padding:24px 14px;text-align:center;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.lcb:hover{transform:translateY(-3px);box-shadow:var(--sh);}
+.lcb.cc{border-color:var(--or);}.lcb.cc:hover{background:var(--od);}
+.lcb.ca:hover{background:rgba(255,255,255,.05);}
+.lci{font-size:36px;}.lcl{font-size:14px;font-weight:700;color:var(--t1);}.lcs{font-size:11px;color:var(--tm);}
+.pin-box{display:none;background:var(--sur);border:1px solid var(--bd2);border-radius:var(--rl);padding:20px;margin-top:12px;}
+.pin-tit{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px;}
+.pin-row{display:flex;gap:8px;}
+.pin-inp{flex:1;padding:10px;background:var(--sur2);border:1.5px solid var(--bd2);border-radius:var(--rs);color:var(--t1);font-size:16px;font-family:Inter,sans-serif;outline:none;text-align:center;letter-spacing:4px;}
+.pin-inp:focus{border-color:var(--or);}
+.pin-btn{padding:10px 16px;background:var(--nv);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;}
+.pin-hint{font-size:11px;color:var(--tm);margin-top:6px;}
+
+/* ═══ APP ═══ */
+#app{display:none;}
+.lay{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sb{width:242px;min-width:242px;background:var(--nv3);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s;}
+.sb.hi{transform:translateX(-100%);}
+.sbh{padding:16px 14px 13px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;}
+.sbh img{width:37px;height:37px;object-fit:contain;flex-shrink:0;border-radius:6px;}
+.sbn{font-family:"Barlow Condensed",sans-serif;font-size:19px;font-weight:900;color:#fff;letter-spacing:2px;}
+.sbs{font-size:9px;color:var(--or);text-transform:uppercase;letter-spacing:1.5px;}
+.pvsw{margin:8px 10px;display:flex;background:rgba(255,255,255,.06);border-radius:var(--rs);padding:2px;}
+.pvb{flex:1;padding:6px 4px;border:none;border-radius:4px;background:transparent;color:rgba(255,255,255,.5);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;}
+.pvb.active{background:var(--or);color:#fff;box-shadow:0 2px 8px rgba(232,98,10,.4);}
+.sb-role{padding:8px 13px;margin:0 8px 5px;border-radius:var(--rs);font-size:11px;font-weight:700;text-align:center;}
+.sb-role.ar{background:rgba(232,98,10,.15);color:var(--or);}
+.sb-role.cr{background:rgba(26,158,94,.15);color:#0f7a48;}
+nav.mn{flex:1;overflow-y:auto;padding:5px 0;}
+.ns{font-size:9px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:2px;padding:10px 15px 4px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 13px;margin:1px 7px;border-radius:var(--rs);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+.ni:hover{background:rgba(255,255,255,.05);color:#fff;}
+.ni.active{background:var(--od);color:var(--or);border-left-color:var(--or);}
+.ni .ic{font-size:15px;width:19px;text-align:center;flex-shrink:0;}
+/* Réglages couleur DANS la sidebar */
+.sb-cfg{padding:10px 13px;margin:0 8px 6px;border-radius:var(--rs);background:var(--sur2);}
+.sb-cfg-t{font-size:9px;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-weight:700;}
+.cdts{display:flex;gap:6px;flex-wrap:wrap;}
+.cdt{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .2s;}
+.cdt:hover,.cdt.sel{border-color:#fff;transform:scale(1.15);}
+.sb-bot{padding:11px 13px;border-top:1px solid var(--bd);}
+.sb-out{width:100%;padding:8px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;}
+.sb-out:hover{background:rgba(224,53,53,.2);color:#e03535;}
+
+/* MAIN */
+.ma{margin-left:242px;flex:1;display:flex;flex-direction:column;min-height:100vh;transition:margin .3s;}
+.ma.full{margin-left:0;}
+.topb{height:54px;background:var(--sur);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 18px;gap:11px;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.tb-m{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t2);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--rs);}
+.tb-m:hover{background:var(--sur2);}
+.tb-ttl{font-size:15px;font-weight:800;color:var(--t1);flex:1;}
+.tb-pv{font-size:11px;font-weight:700;color:var(--or);background:var(--od);border:1px solid rgba(232,98,10,.25);padding:4px 10px;border-radius:20px;display:none;}
+.tb-btn{width:32px;height:32px;border-radius:var(--rs);border:1px solid var(--bd2);background:var(--sur2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t2);}
+.tb-btn:hover{background:var(--sur3);}
+.pc{flex:1;padding:16px 20px;}
+.sec{display:none;}.sec.active{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.sc{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;position:relative;overflow:hidden;cursor:pointer;transition:all .2s;}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+.sc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--or));}
+.sc::after{content:var(--ico,"📊");position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:26px;opacity:.1;}
+.sl{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;}
+.sv{font-size:23px;font-weight:900;color:var(--t1);margin:5px 0 2px;font-family:"Barlow Condensed",sans-serif;}
+
+/* CARD */
+.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 17px;border-bottom:1px solid var(--bd);}
+.ct{font-size:13px;font-weight:700;color:var(--t1);}
+.cbp{padding:15px 17px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* TABLE */
+.tw{border-radius:var(--rl);overflow:hidden;border:1px solid var(--bd);}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--nv3);}
+th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+td{padding:9px 12px;font-size:13px;color:var(--t2);border-bottom:1px solid var(--bd);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+td strong{color:var(--t1);}td.n{font-variant-numeric:tabular-nums;font-weight:600;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.bg2{background:var(--grd);color:#0f7a48;}.brd{background:var(--rdd);color:#b91c1c;}
+.byw{background:var(--ywd);color:#92400e;}.bbl{background:var(--bld);color:#1e4d8c;}
+.bor{background:var(--od);color:var(--or);}.bgy{background:rgba(255,255,255,.06);color:var(--tm);}
+.bpu{background:var(--pud);color:var(--pu);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--rs);border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:Inter,sans-serif;transition:all .2s;white-space:nowrap;}
+.btn:active{transform:scale(.98);}
+.bp{background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;}
+.bp:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(232,98,10,.4);}
+.bs{background:var(--nv2);color:#fff;}
+.bg{background:var(--sur2);color:var(--t2);border:1px solid var(--bd);}
+.bg:hover{background:var(--sur3);}
+.bwa{background:#25D366;color:#fff;}
+.bwa:hover{box-shadow:0 4px 12px rgba(37,211,102,.4);}
+.bsm{padding:5px 11px;font-size:12px;}
+.bxs{padding:3px 8px;font-size:11px;}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:16px;}
+.mo.open{display:flex;}
+.mdl{background:var(--sur);border:1px solid var(--bd2);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:var(--shx);animation:mi .2s ease;}
+.mlg{max-width:660px;}
+@keyframes mi{from{opacity:0;transform:translateY(-12px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:15px 19px 12px;border-bottom:1px solid var(--bd);}
+.mt{font-size:14px;font-weight:800;color:var(--t1);}
+.mx{width:27px;height:27px;border-radius:50%;background:var(--sur2);color:var(--tm);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.mx:hover{background:var(--rdd);color:#e03535;}
+.mbody{padding:17px 19px;}
+.mfoot{padding:12px 19px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;}
+
+/* FORM */
+.fg{margin-bottom:11px;}
+.fl{display:block;font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.7px;}
+.fi,.fs{width:100%;padding:9px 11px;border:1.5px solid var(--bd2);border-radius:var(--rs);background:var(--sur2);color:var(--t1);font-size:13px;font-family:Inter,sans-serif;outline:none;transition:all .2s;}
+.fi:focus,.fs:focus{border-color:var(--or);box-shadow:0 0 0 3px var(--od);}
+.fta{width:100%;padding:9px 11px;border:1.5px solid var(--bd2);border-radius:var(--rs);background:var(--sur2);color:var(--t1);font-size:13px;font-family:Inter,sans-serif;outline:none;resize:vertical;min-height:65px;line-height:1.5;}
+.fta:focus{border-color:var(--or);}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* MISC */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;}
+.shtl{font-size:16px;font-weight:800;color:var(--t1);}
+.shsb{font-size:12px;color:var(--tm);margin-top:2px;}
+.sbar{display:flex;gap:8px;margin-bottom:11px;}
+.sin{flex:1;padding:8px 11px;background:var(--sur2);border:1px solid var(--bd);border-radius:var(--rs);color:var(--t1);font-size:13px;font-family:Inter,sans-serif;outline:none;}
+.sin:focus{border-color:var(--or);}
+.sf2{padding:8px 10px;background:var(--sur2);border:1px solid var(--bd);border-radius:var(--rs);color:var(--t2);font-size:12px;font-family:Inter,sans-serif;outline:none;}
+.dvd{border:none;border-top:1px solid var(--bd);margin:12px 0;}
+.kr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bd);}
+.kr:last-child{border-bottom:none;}
+.kl{font-size:12px;color:var(--tm);}.kv{font-size:13px;font-weight:700;color:var(--t1);}
+.tag{display:inline-block;padding:2px 7px;background:var(--sur2);border:1px solid var(--bd);border-radius:20px;font-size:11px;color:var(--t2);}
+.crb{height:5px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden;}
+.crf{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--or),var(--or2));}
+.al{display:flex;align-items:flex-start;gap:9px;padding:10px 13px;border-radius:var(--rs);font-size:13px;margin-bottom:10px;}
+.ai{background:var(--bld);color:#1e4d8c;border:1px solid rgba(29,111,179,.25);}
+.aw{background:var(--ywd);color:#92400e;border:1px solid rgba(217,119,6,.25);}
+.es{text-align:center;padding:40px 20px;color:var(--tm);}
+.ei{font-size:36px;margin-bottom:10px;opacity:.6;}.et{font-size:14px;font-weight:600;color:var(--t2);}
+
+/* PANIER */
+.pi{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd);}
+.pi:last-child{border-bottom:none;}
+.ptot{background:var(--nv3);border:1px solid var(--bd);border-radius:var(--r);padding:13px;margin-top:12px;}
+.pgr{display:flex;justify-content:space-between;align-items:center;padding-top:9px;margin-top:7px;border-top:2px solid var(--or);}
+.gamt{font-size:21px;font-weight:900;color:var(--or);font-family:"Barlow Condensed",sans-serif;}
+
+/* TOAST */
+.tc{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.tst{background:var(--sur);border:1px solid var(--bd2);border-radius:var(--r);padding:11px 15px;font-size:13px;font-weight:600;color:var(--t1);box-shadow:var(--sh);display:flex;align-items:center;gap:8px;min-width:230px;animation:ti .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes ti{from{opacity:0;transform:translateX(38px);}to{opacity:1;transform:translateX(0);}}
+.tst.success{border-left:3px solid var(--gr);}
+.tst.error{border-left:3px solid var(--rd);}
+.tst.warning{border-left:3px solid var(--yw);}
+.tst.info{border-left:3px solid var(--or);}
+
+
+/* VITRINE */
+.vh{background:linear-gradient(135deg,var(--nv),var(--nv2));border-radius:var(--rl);padding:24px;margin-bottom:18px;position:relative;overflow:hidden;}
+.vh::after{content:"🏗";position:absolute;right:16px;bottom:-8px;font-size:80px;opacity:.07;}
+.vh-t{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:2px;}
+.vh-s{font-size:13px;color:rgba(255,255,255,.65);margin-top:5px;}
+.vh-a{margin-top:14px;display:flex;gap:9px;flex-wrap:wrap;}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:14px;}
+.prc{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;transition:all .25s;display:flex;flex-direction:column;}
+.prc:hover{transform:translateY(-3px);box-shadow:var(--sh);border-color:var(--or);}
+.prc-img{width:100%;height:170px;object-fit:cover;background:var(--sur2);}
+.prc-b{padding:16px;flex:1;display:flex;flex-direction:column;}
+.prc-bdg{margin-bottom:7px;display:flex;gap:5px;flex-wrap:wrap;}
+.pbdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
+.pbh{background:rgba(232,98,10,.2);color:var(--or);}
+.pbg{background:rgba(26,158,94,.2);color:#0f7a48;}
+.pbr{background:var(--rdd);color:#b91c1c;}
+.prc-n{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:4px;}
+.prc-d{font-size:12px;color:var(--tm);margin-bottom:10px;flex:1;}
+.prc-p{font-size:20px;font-weight:900;color:var(--or);font-family:"Barlow Condensed",sans-serif;margin-bottom:7px;}
+.prc-s{font-size:11px;color:var(--tm);margin-bottom:10px;}
+.qr{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.ql{font-size:12px;font-weight:600;color:var(--t2);}
+.qi{width:75px;padding:7px 9px;background:var(--sur2);border:1.5px solid var(--bd2);border-radius:var(--rs);color:var(--t1);font-size:14px;font-weight:700;text-align:center;outline:none;}
+.qi:focus{border-color:var(--or);}
+.qt{font-size:12px;font-weight:700;color:var(--or);}
+.prc-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.prc-btns .btn{flex:1;justify-content:center;padding:9px 7px;font-size:12px;}
+
+/* RÉGLAGES */
+.reg-s{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:18px;margin-bottom:14px;}
+.reg-t{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.cg{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px;}
+.cdot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;}
+.cdot:hover,.cdot.sel{border-color:#fff;transform:scale(1.15);box-shadow:0 0 10px rgba(255,255,255,.3);}
+
+/* SALAIRE CARD */
+.sal-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;border-left:4px solid var(--or);}
+/* DEPOT CARD */
+.dep-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:15px;border-left:4px solid var(--pu);}
+
+/* CAMION STATUT */
+.tdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
+.td-d{background:var(--gr);box-shadow:0 0 6px var(--gr);}
+.td-r{background:var(--or);box-shadow:0 0 6px var(--or);}
+.td-p{background:var(--rd);box-shadow:0 0 6px var(--rd);}
+
+@media print{body{background:#fff!important;color:#000!important;}#login,.sb,.topb,.mo,.tc{display:none!important;}.ma{margin-left:0!important;}.sec{display:block!important;}.sec:not(.active){display:none!important;}}
+@media(max-width:768px){
+  .sg{grid-template-columns:1fr 1fr;}
+  .sb{width:100%;height:auto;position:fixed;bottom:0;top:auto;left:0;right:0;border-top:1px solid var(--bd);border-right:none;z-index:200;}
+  .sb.hi{transform:translateY(100%);}
+  .sbh,.pvsw,.ns,.sb-cfg,.sb-bot,.sb-role{display:none;}
+  nav.mn{display:flex;flex-direction:row;overflow-x:auto;padding:0;flex:1;}
+  .ni{flex-direction:column;gap:2px;padding:7px 8px;font-size:9px;border-left:none;border-top:3px solid transparent;min-width:58px;justify-content:center;text-align:center;}
+  .ni.active{border-top-color:var(--or);border-left:none;}
+  .ni .ic{font-size:18px;}
+  .ma{margin-left:0;margin-bottom:62px;}
+  .g2,.g3{grid-template-columns:1fr;}
+  .pg{grid-template-columns:1fr;}
+  .pc{padding:13px 14px;}
+  .lc{grid-template-columns:1fr;}
+  .tb-pv{display:none!important;}
+}
+
+/* PWA INSTALL BANNER */
+#pwa-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:980;background:linear-gradient(135deg,var(--nv),var(--nv2));border-top:2px solid var(--or);padding:14px 16px;box-shadow:0 -8px 32px rgba(0,0,0,.4);}
+#pwa-banner.show{display:flex;align-items:center;gap:12px;}
+.pwa-icon{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#0f2744,#1a3a5c);border:2px solid var(--or);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.pwa-txt{flex:1;}.pwa-txt strong{color:#fff;font-size:14px;font-weight:800;display:block;}
+.pwa-txt span{color:rgba(255,255,255,.65);font-size:11px;}
+.pwa-btn{padding:8px 14px;background:var(--or);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.pwa-close{width:28px;height:28px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:rgba(255,255,255,.6);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+@media print{#pwa-banner{display:none!important;}}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login">
+  <div class="lw">
+    <div class="ll">
+      <img src="data:image/png;base64,__LOGO__" alt="Gabelle">
+      <div class="lb">GABELLE</div>
+      <div class="ls">Matériaux de Construction · Gonaïves, Haïti</div>
+    </div>
+    <div class="lc">
+      <div class="lcb cc" onclick="enterClient()">
+        <div class="lci">🛒</div>
+        <div class="lcl">Espace Client</div>
+        <div class="lcs">Voir produits & commander</div>
+      </div>
+      <div class="lcb ca" onclick="showPin()">
+        <div class="lci">💼</div>
+        <div class="lcl">Espace Admin</div>
+        <div class="lcs">Gestion interne Gabelle</div>
+      </div>
+    </div>
+    <div class="pin-box" id="pin-box">
+      <div class="pin-tit">🔐 Code PIN Admin</div>
+      <div class="pin-row">
+        <input class="pin-inp" type="password" id="pin-inp" maxlength="20" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPin()">
+        <button class="pin-btn" onclick="checkPin()">Entrer</button>
+      </div>
+      <div class="pin-hint">Contactez l'administrateur Gabelle pour obtenir le code.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+<div class="lay">
+
+<!-- SIDEBAR -->
+<aside class="sb" id="sb">
+  <div class="sbh">
+    <img src="data:image/png;base64,__LOGO__" alt="G">
+    <div><div class="sbn">GABELLE</div><div class="sbs">ERP · Gonaïves</div></div>
+  </div>
+  <div class="pvsw" id="pv-sw" style="display:none">
+    <button class="pvb active" onclick="setPV('dolan',this)">🏪 Dolan</button>
+    <button class="pvb" onclick="setPV('pontq',this)">🏗 Pont Q.</button>
+  </div>
+  <div class="sb-role" id="sb-role">—</div>
+  <nav class="mn" id="main-nav"></nav>
+  <!-- Couleurs inline dans sidebar (admin seulement) -->
+  <div class="sb-cfg" id="sb-cfg" style="display:none">
+    <div class="sb-cfg-t">🎨 Couleur sidebar</div>
+    <div class="cdts">
+      <div class="cdt sel" style="background:#081b30" onclick="sbColor('#081b30',this)"></div>
+      <div class="cdt" style="background:#1e1e2e" onclick="sbColor('#1e1e2e',this)"></div>
+      <div class="cdt" style="background:#2d3748" onclick="sbColor('#2d3748',this)"></div>
+      <div class="cdt" style="background:#1a3a1a" onclick="sbColor('#1a3a1a',this)"></div>
+      <div class="cdt" style="background:#3a1a1a" onclick="sbColor('#3a1a1a',this)"></div>
+      <div class="cdt" style="background:#1a1a3a" onclick="sbColor('#1a1a3a',this)"></div>
+    </div>
+  </div>
+  <div class="sb-bot">
+    <button class="sb-out" onclick="doLogout()">🚪 Déconnexion</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="ma" id="ma">
+<div class="topb">
+  <button class="tb-m" onclick="toggleSB()">☰</button>
+  <div class="tb-ttl" id="tb-ttl">Boutique Gabelle</div>
+  <div class="tb-pv" id="tb-pv">📍 Gabelle Dolan</div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="tb-btn" onclick="toggleTheme()" id="th-btn">🌙</button>
+    <button class="tb-btn" id="alert-btn" style="display:none;position:relative" onclick="showAlerts()">🔔<span id="ndot" style="display:none;width:8px;height:8px;background:var(--rd);border-radius:50%;border:2px solid var(--sur);position:absolute;top:4px;right:4px"></span></button>
+  </div>
+</div>
+
+<div class="pc">
+
+<!-- ══ VITRINE CLIENT ══ -->
+<div class="sec active" id="sec-vitrine">
+  <div class="vh">
+    <div class="vh-t">🏗 GABELLE MATÉRIAUX</div>
+    <div class="vh-s">Votre partenaire construction à Gonaïves — Commandez en ligne par WhatsApp</div>
+    <div class="vh-a">
+      <button class="btn bwa" onclick="waGeneral()">📱 Commander par WhatsApp</button>
+      
+    </div>
+  </div>
+  <div class="sh"><div class="shtl">📦 Nos Produits</div></div>
+  <div class="pg" id="vitrine-grid"></div>
+</div>
+
+<!-- ══ PANIER CLIENT ══ -->
+<div class="sec" id="sec-panier">
+  <div class="sh"><div class="shtl">🛒 Mon Panier</div><button class="btn bg bsm" onclick="viderPanCli()">✕ Vider</button></div>
+  <div id="pan-cli-items"><div class="es"><div class="ei">🛒</div><div class="et">Panier vide</div></div></div>
+  <div id="pan-cli-tot" style="display:none">
+    <div class="ptot">
+      <div style="display:flex;justify-content:space-between;padding:3px 0"><span style="color:var(--tm)">Sous-total</span><span id="pcli-sub">0 HTG</span></div>
+      <div class="pgr"><span style="font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase">TOTAL</span><span class="gamt" id="pcli-tot">0 HTG</span></div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="fg"><label class="fl">Votre Nom *</label><input class="fi" id="pcli-nom" placeholder="Jean Pierre"></div>
+      <div class="fg"><label class="fl">Téléphone *</label><input class="fi" id="pcli-tel" placeholder="509-xxxx-xxxx" type="tel"></div>
+      <div class="fg"><label class="fl">Adresse Livraison</label><input class="fi" id="pcli-adr" placeholder="Quartier, rue, repères…"></div>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:8px">
+      <button class="btn bwa" style="flex:1;justify-content:center;padding:12px" onclick="cmdWA()">📱 WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ADMIN ══ -->
+<div class="sec" id="sec-dashboard">
+  <div class="sg">
+    <div class="sc" style="--c:var(--or);--ico:'💰'" onclick="goSec('sec-ventes')"><div class="sl">Ventes du Jour</div><div class="sv" id="db-vj">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--gr);--ico:'📈'" onclick="goSec('sec-rapports')"><div class="sl">Ventes du Mois</div><div class="sv" id="db-vm">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--pu);--ico:'📦'" onclick="goSec('sec-stock')"><div class="sl">Valeur Stock</div><div class="sv" id="db-vs">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--rd);--ico:'⚠️'" onclick="goSec('sec-clients')"><div class="sl">Créances Clients</div><div class="sv" id="db-cr">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">🚨 Alertes Stock</span><button class="btn bg bsm" onclick="goSec('sec-stock')">Voir →</button></div><table><thead><tr><th>Produit</th><th>Stock</th><th>Statut</th></tr></thead><tbody id="db-al"></tbody></table></div>
+    <div class="card"><div class="ch"><span class="ct">🕐 Dernières Ventes</span><button class="btn bg bsm" onclick="goSec('sec-ventes')">Voir →</button></div><table><thead><tr><th>Client</th><th>Montant</th><th>Statut</th></tr></thead><tbody id="db-lv"></tbody></table></div>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="card"><div class="ch"><span class="ct">🚛 Résumé Flotte (Mois)</span></div><table><thead><tr><th>Camion</th><th>Voyages</th><th>Bénéfice</th></tr></thead><tbody id="db-fl"></tbody></table></div>
+    <div class="card"><div class="ch"><span class="ct">📉 Résultat Net</span></div>
+      <div class="cbp">
+        <div class="kr"><span class="kl">💰 Revenus Ventes</span><span class="kv" id="rn-v" style="color:var(--gr)">0 HTG</span></div>
+        <div class="kr"><span class="kl">🚛 Revenus Camions</span><span class="kv" id="rn-c" style="color:var(--gr)">0 HTG</span></div>
+        <div class="kr"><span class="kl">👷 Masse Salariale</span><span class="kv" id="rn-s" style="color:var(--rd)">0 HTG</span></div>
+        <div class="kr"><span class="kl">⛽ Dép. Camions</span><span class="kv" id="rn-d" style="color:var(--rd)">0 HTG</span></div>
+        <div style="background:var(--grd);border-radius:var(--rs);padding:12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:10px;color:#0f7a48">✅ RÉSULTAT NET</div><div style="font-size:22px;font-weight:900;color:var(--gr);font-family:'Barlow Condensed',sans-serif" id="rn-net">0 HTG</div></div>
+          <span style="font-size:30px">📈</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STOCK ══ -->
+<div class="sec" id="sec-stock">
+  <div class="sh">
+    <div><div class="shtl">📦 Stock & Inventaire</div><div class="shsb" id="sk-sub">—</div></div>
+    <button class="btn bp" id="btn-add-prod" onclick="openPF(null)" style="display:none">+ Ajouter Produit</button>
+  </div>
+  <div class="sbar">
+    <input class="sin" id="sk-q" placeholder="🔍 Rechercher…" oninput="renderStock()">
+    <select class="sf2" id="sk-cat" onchange="renderStock()">
+      <option value="">Toutes catégories</option>
+      <option>Ciment</option><option>Fer / Acier</option><option>Sable / Gravier</option>
+      <option>Tôle / Couverture</option><option>Clous</option><option>Plomberie</option>
+      <option>Électricité</option><option>Peinture</option><option>Bois</option><option>Autre</option>
+    </select>
+    <button class="btn bg bsm" onclick="expCSV(prods,'Stock')">📊 CSV</button>
+  </div>
+  <div class="tw"><table><thead><tr><th>Produit</th><th>Cat.</th><th>Stock</th><th>Unité</th><th>Prix HTG</th><th>Valeur</th><th>Min</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="sk-tb"></tbody></table></div>
+</div>
+
+<!-- ══ VENTES ══ -->
+<div class="sec" id="sec-ventes">
+  <div class="sh">
+    <div><div class="shtl">🛒 Ventes & Caisse</div></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn bg bsm" onclick="toggleHistV()">📋 Historique</button>
+      <button class="btn bg bsm" onclick="goSec('sec-caisse')">🏦 Clôture</button>
+    </div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="card" style="margin-bottom:13px">
+        <div class="ch"><span class="ct">📝 Nouvelle Vente</span></div>
+        <div class="cbp">
+          <div class="fr">
+            <div class="fg"><label class="fl">N° Facture</label><input class="fi" id="v-fac" readonly style="color:var(--or);font-weight:700"></div>
+            <div class="fg"><label class="fl">Devise</label><select class="fs" id="v-dev" onchange="updDev()"><option value="HTG">🇭🇹 HTG</option><option value="USD">🇺🇸 USD</option></select></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Client</label><select class="fs" id="v-cli"></select></div>
+            <div class="fg"><label class="fl">Vendeur</label><input class="fi" id="v-vnd" value="André Jean"></div>
+          </div>
+          <hr class="dvd">
+          <div class="fr">
+            <div class="fg"><label class="fl">Produit</label><select class="fs" id="v-prd" onchange="updPx()"></select></div>
+            <div class="fg"><label class="fl">Quantité</label><input class="fi" type="number" id="v-qte" value="1" min="0.1" step="0.1"></div>
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Prix (<span id="v-dl">HTG</span>)</label><input class="fi" type="number" id="v-pri" placeholder="0"></div>
+            <div class="fg"><label class="fl">Mode Paiement</label>
+              <select class="fs" id="v-mod">
+                <option value="cash">💵 Cash</option>
+                <option value="credit">📋 Crédit</option>
+                <option value="virement">🏦 Virement</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Notes</label><input class="fi" id="v-nte" placeholder="Observations…"></div>
+          <button class="btn bs" style="width:100%" onclick="addPan()">+ Ajouter au Panier</button>
+        </div>
+      </div>
+      <div class="card"><div class="ch"><span class="ct">🕐 Ventes Aujourd'hui</span></div><table><thead><tr><th>Heure</th><th>Client</th><th>Montant</th><th>Mode</th><th>Statut</th></tr></thead><tbody id="v-jour"></tbody></table></div>
+    </div>
+    <div class="card" style="height:fit-content">
+      <div class="ch"><span class="ct">🛒 Panier Admin</span><button class="btn bg bxs" onclick="clearPan()">✕</button></div>
+      <div class="cbp">
+        <div id="pan-adm-items"><div class="es" style="padding:22px"><div class="ei">🛒</div><div class="et">Panier vide</div></div></div>
+        <div id="pan-adm-tot" style="display:none">
+          <div class="ptot">
+            <div style="display:flex;justify-content:space-between;padding:3px 0"><span style="color:var(--tm);font-size:12px">Sous-total</span><span id="p-sub">0 HTG</span></div>
+            <div class="pgr"><span style="font-size:11px;font-weight:700;color:var(--tm);text-transform:uppercase">TOTAL</span><span class="gamt" id="p-tot">0 HTG</span></div>
+            <div id="p-usd" style="text-align:right;font-size:11px;color:var(--tm);margin-top:3px"></div>
+          </div>
+          <div class="fg" style="margin-top:11px"><label class="fl">Avance reçue (HTG)</label><input class="fi" type="number" id="p-avc" placeholder="0" oninput="calcReste()"></div>
+          <div id="p-rrow" style="display:none;justify-content:space-between;padding:5px 0"><span style="color:var(--rd);font-size:12px">Reste à payer</span><span id="p-rst" style="color:var(--rd);font-weight:700">0 HTG</span></div>
+          <button class="btn bp" style="width:100%;margin-top:11px;padding:12px;font-size:14px" onclick="confirmerVente()">✅ Confirmer & Générer Facture</button>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn bwa" style="flex:1;justify-content:center" onclick="waConfirm()">📱 WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="hist-v-card" style="margin-top:14px;display:none">
+    <div class="ch"><span class="ct">📋 Historique Ventes</span>
+      <div style="display:flex;gap:7px"><input type="date" class="sf2" id="hv-df"><input type="date" class="sf2" id="hv-dt"><button class="btn bg bsm" onclick="renderHistV()">Filtrer</button></div>
+    </div>
+    <table><thead><tr><th>Date</th><th>Facture</th><th>Client</th><th>Produit</th><th>Total</th><th>Mode</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="hv-tb"></tbody></table>
+  </div>
+</div>
+
+<!-- ══ CLIENTS ══ -->
+<div class="sec" id="sec-clients">
+  <div class="sh"><div class="shtl">👥 Clients & Crédits</div><button class="btn bp" onclick="openCF(null)">+ Nouveau Client</button></div>
+  <div class="sbar"><input class="sin" id="cli-q" placeholder="🔍 Nom, téléphone…" oninput="renderClients()"><button class="btn bg bsm" onclick="expCSV(clients,'Clients')">📊 CSV</button></div>
+  <div class="tw"><table><thead><tr><th>Nom</th><th>Téléphone</th><th>Crédit HTG</th><th>Limite HTG</th><th>Progression</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="cli-tb"></tbody></table></div>
+</div>
+
+<!-- ══ CAMIONS ══ -->
+<div class="sec" id="sec-camions">
+  <div class="sh">
+    <div><div class="shtl">🚛 Flotte de Camions</div></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn bg bsm" onclick="openM('m-maint')">🔧 Maintenance</button>
+      <button class="btn bp" onclick="openM('m-cam')">+ Nouveau Voyage</button>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="sc" style="--c:var(--or);--ico:'🚛'"><div class="sl">Revenus (Mois)</div><div class="sv" id="cam-rev">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--rd);--ico:'⛽'"><div class="sl">Carburant</div><div class="sv" id="cam-cb">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--yw);--ico:'🔧'"><div class="sl">Autres Dép.</div><div class="sv" id="cam-au">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--gr);--ico:'✅'"><div class="sl">Bénéfice Net</div><div class="sv" id="cam-bn" style="color:var(--gr)">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+  </div>
+  <div class="card" style="margin-bottom:13px"><div class="ch"><span class="ct">🚛 Statut de la Flotte</span></div><div class="cbp"><div id="flotte-g" style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px"></div></div></div>
+  <div class="tw"><table><thead><tr><th>Date</th><th>Camion</th><th>Destination</th><th>Revenu</th><th>Carburant</th><th>Autres</th><th>Chauffeur</th><th>Bénéfice</th><th>Actions</th></tr></thead><tbody id="cam-tb"></tbody></table></div>
+</div>
+
+<!-- ══ EMPLOYÉS & SALAIRES ══ -->
+<div class="sec" id="sec-employes">
+  <div class="sh">
+    <div><div class="shtl">👷 Employés & Salaires</div><div class="shsb">Gestion RH · Paie mensuelle</div></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn bg bsm" onclick="payerTous()">💸 Payer Tous</button>
+      <button class="btn bp" onclick="openEmpF(null)">+ Nouvel Employé</button>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="sc" style="--c:var(--or);--ico:'👷'"><div class="sl">Total Employés</div><div class="sv" id="e-tot">0</div><div style="font-size:11px;color:var(--tm)">actifs</div></div>
+    <div class="sc" style="--c:var(--yw);--ico:'💸'"><div class="sl">Masse Salariale</div><div class="sv" id="e-sal">0</div><div style="font-size:11px;color:var(--tm)">HTG/mois</div></div>
+    <div class="sc" style="--c:var(--gr);--ico:'✅'"><div class="sl">Payés ce Mois</div><div class="sv" id="e-pay">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--rd);--ico:'⏳'"><div class="sl">En Attente</div><div class="sv" id="e-att">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+  </div>
+  <div id="emp-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:14px"></div>
+  <div class="tw"><table><thead><tr><th>Nom</th><th>Poste</th><th>Téléphone</th><th>Salaire</th><th>Type</th><th>Statut Mois</th><th>Actions</th></tr></thead><tbody id="emp-tb"></tbody></table></div>
+  <div class="card" style="margin-top:14px">
+    <div class="ch"><span class="ct">📋 Historique Paiements</span><button class="btn bg bsm" onclick="expCSV(paieSal,'PaieHist')">📊 CSV</button></div>
+    <table><thead><tr><th>Date</th><th>Employé</th><th>Poste</th><th>Montant</th><th>Mode</th><th>Mois</th></tr></thead><tbody id="paie-tb"></tbody></table>
+  </div>
+</div>
+
+<!-- ══ DÉPÔTS CLIENTS ══ -->
+<div class="sec" id="sec-depots">
+  <div class="sh">
+    <div><div class="shtl">🏛️ Dépôts Clients</div><div class="shsb">Marchandises payées & stockées — Suivi retraits</div></div>
+    <button class="btn bp" onclick="openDepotF()">+ Nouveau Dépôt</button>
+  </div>
+  <div class="al ai">ℹ️ <strong>DÉPÔT</strong> = Client peye tout machandiz li davans, yo rete nan depo. Li vin pran yo progressivement. Suivi: Payé · Récupéré · Solde.</div>
+  <div class="sg g3">
+    <div class="sc" style="--c:var(--pu);--ico:'💰'"><div class="sl">Total Dépôts</div><div class="sv" id="dep-tot">0</div><div style="font-size:11px;color:var(--tm)">HTG</div></div>
+    <div class="sc" style="--c:var(--yw);--ico:'⏳'"><div class="sl">En Attente Retrait</div><div class="sv" id="dep-att">0</div><div style="font-size:11px;color:var(--tm)">dépôt(s)</div></div>
+    <div class="sc" style="--c:var(--gr);--ico:'✅'"><div class="sl">Soldés</div><div class="sv" id="dep-sol">0</div><div style="font-size:11px;color:var(--tm)">dépôt(s)</div></div>
+  </div>
+  <div id="dep-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:14px"></div>
+  <div class="tw"><table><thead><tr><th>Date</th><th>Client</th><th>Produit</th><th>Qté Payée</th><th>Qté Récupérée</th><th>Solde Restant</th><th>Montant HTG</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="dep-tb"></tbody></table></div>
+</div>
+
+<!-- ══ FOURNISSEURS ══ -->
+<div class="sec" id="sec-fournisseurs">
+  <div class="sh"><div class="shtl">🤝 Fournisseurs</div><button class="btn bp" onclick="openFF(null)">+ Nouveau Fournisseur</button></div>
+  <div class="tw"><table><thead><tr><th>Nom</th><th>Téléphone</th><th>Produits</th><th>Total Dû</th><th>Payé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="fo-tb"></tbody></table></div>
+</div>
+
+<!-- ══ CAISSE ══ -->
+<div class="sec" id="sec-caisse">
+  <div class="sh"><div><div class="shtl">🏦 Clôture de Caisse</div></div><button class="btn bp" onclick="clotureCaisse()">🔒 Clôturer</button></div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">📥 Entrées</span></div><div class="cbp"><div id="cs-ent"></div><hr class="dvd"><div class="kr"><span class="kl">TOTAL ENTRÉES</span><strong style="color:var(--gr)" id="cs-te">0 HTG</strong></div></div></div>
+    <div class="card"><div class="ch"><span class="ct">📤 Sorties</span></div><div class="cbp"><div id="cs-sor"></div><hr class="dvd"><div class="kr"><span class="kl">TOTAL SORTIES</span><strong style="color:var(--rd)" id="cs-ts">0 HTG</strong></div></div></div>
+  </div>
+  <div class="card" style="margin-top:13px">
+    <div class="ch"><span class="ct">📊 Solde Final</span></div>
+    <div class="cbp">
+      <div class="g3">
+        <div style="text-align:center;padding:13px;background:var(--grd);border-radius:var(--rs)"><div style="font-size:10px;color:#0f7a48;text-transform:uppercase">Solde Théorique</div><div style="font-size:22px;font-weight:900;color:var(--gr);font-family:'Barlow Condensed',sans-serif" id="cs-sth">0</div><div style="font-size:10px;color:#0f7a48">HTG</div></div>
+        <div style="text-align:center;padding:13px;background:var(--sur2);border-radius:var(--rs)"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">Solde Réel</div><input class="fi" type="number" id="cs-reel" placeholder="0" oninput="calcEc()" style="text-align:center;font-size:18px;font-weight:700;margin-top:7px"><div style="font-size:10px;color:var(--tm)">HTG</div></div>
+        <div style="text-align:center;padding:13px;background:var(--sur2);border-radius:var(--rs)" id="cs-ec-card"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">Écart</div><div style="font-size:22px;font-weight:900;font-family:'Barlow Condensed',sans-serif" id="cs-ecart">—</div><div style="font-size:10px;color:var(--tm)">HTG</div></div>
+      </div>
+      <div class="fg" style="margin-top:13px"><label class="fl">Observations</label><textarea class="fta" id="cs-notes" placeholder="Notes de clôture…"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RAPPORTS ══ -->
+<div class="sec" id="sec-rapports">
+  <div class="sh">
+    <div><div class="shtl">📈 Rapports & KPIs</div></div>
+    <div style="display:flex;gap:7px">
+      <button class="btn bg bsm" onclick="expCSV(ventes,'Ventes')">📊 CSV</button>
+      <button class="btn bp" onclick="genRapportPDF()">📄 PDF Rapport</button>
+    </div>
+  </div>
+  <div class="g3">
+    <div style="background:var(--sur2);border-radius:var(--rs);padding:14px;text-align:center"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">CA Total Ventes</div><div style="font-size:20px;font-weight:900;color:var(--gr);font-family:'Barlow Condensed',sans-serif" id="rp-ca">0 HTG</div></div>
+    <div style="background:var(--sur2);border-radius:var(--rs);padding:14px;text-align:center"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">Revenus Camions</div><div style="font-size:20px;font-weight:900;color:var(--bl);font-family:'Barlow Condensed',sans-serif" id="rp-cam">0 HTG</div></div>
+    <div style="background:var(--sur2);border-radius:var(--rs);padding:14px;text-align:center"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">Résultat Net</div><div style="font-size:20px;font-weight:900;color:var(--gr);font-family:'Barlow Condensed',sans-serif" id="rp-net">0 HTG</div></div>
+  </div>
+  <div class="g2" style="margin-top:14px">
+    <div class="card"><div class="ch"><span class="ct">🏆 Top Produits Vendus</span></div><table><thead><tr><th>#</th><th>Produit</th><th>Qté</th><th>Revenu</th></tr></thead><tbody id="rp-top"></tbody></table></div>
+    <div class="card"><div class="ch"><span class="ct">📅 Journal — Mois en Cours</span></div><table><thead><tr><th>Date</th><th>Facture</th><th>Client</th><th>Total</th><th>Mode</th></tr></thead><tbody id="rp-jnl"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ CONVERTISSEUR ══ -->
+<div class="sec" id="sec-conv">
+  <div class="sh"><div class="shtl">💱 Convertisseur HTG / USD</div></div>
+  <div style="max-width:440px;margin:0 auto">
+    <div style="background:linear-gradient(135deg,var(--nv),var(--nv2));border-radius:var(--rl);padding:24px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;text-align:center;margin-bottom:18px;letter-spacing:2px">💱 CONVERTISSEUR DE DEVISES</div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border-radius:8px;padding:11px;margin-bottom:10px">
+        <input type="number" id="cv-htg" placeholder="0" oninput="convH()" style="flex:1;background:transparent;border:none;color:#fff;font-size:20px;font-weight:700;outline:none">
+        <span style="font-size:12px;color:rgba(255,255,255,.7);font-weight:700">HTG 🇭🇹</span>
+      </div>
+      <div style="text-align:center;font-size:22px;margin:8px 0">⇅</div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border-radius:8px;padding:11px">
+        <input type="number" id="cv-usd" placeholder="0" oninput="convU()" style="flex:1;background:transparent;border:none;color:#fff;font-size:20px;font-weight:700;outline:none">
+        <span style="font-size:12px;color:rgba(255,255,255,.7);font-weight:700">USD 🇺🇸</span>
+      </div>
+      <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:13px;text-align:center;margin-top:14px">
+        <div style="font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Taux Actuel</div>
+        <div style="font-size:24px;font-weight:900;color:#f0c040;font-family:'Barlow Condensed',sans-serif" id="cv-taux">1 USD = 132.00 HTG</div>
+        <button class="btn bg bsm" style="margin-top:10px" onclick="openM('m-taux')">✏️ Modifier le taux</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:13px"><div class="ch"><span class="ct">📊 Tableau de Conversion Rapide</span></div><table><thead><tr><th>USD</th><th>= HTG</th><th>HTG</th><th>= USD</th></tr></thead><tbody id="cv-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ══ RÉGLAGES ══ -->
+<div class="sec" id="sec-reglages">
+  <div class="sh"><div class="shtl">⚙️ Réglages & Paramètres</div></div>
+  <div class="g2">
+    <!-- Personnalisation -->
+    <div class="reg-s">
+      <div class="reg-t">🎨 Personnalisation Visuelle</div>
+      <div class="fg"><label class="fl">Couleur de la barre latérale</label>
+        <div class="cg">
+          <div class="cdot sel" style="background:#081b30" onclick="sbColor('#081b30',this)" title="Marine Foncé"></div>
+          <div class="cdot" style="background:#1e1e2e" onclick="sbColor('#1e1e2e',this)" title="Nuit"></div>
+          <div class="cdot" style="background:#2d3748" onclick="sbColor('#2d3748',this)" title="Ardoise"></div>
+          <div class="cdot" style="background:#1a3a1a" onclick="sbColor('#1a3a1a',this)" title="Forêt"></div>
+          <div class="cdot" style="background:#3a1a1a" onclick="sbColor('#3a1a1a',this)" title="Bordeaux"></div>
+          <div class="cdot" style="background:#1a1a3a" onclick="sbColor('#1a1a3a',this)" title="Indigo"></div>
+          <div class="cdot" style="background:#0f3a2a" onclick="sbColor('#0f3a2a',this)" title="Émeraude"></div>
+          <div class="cdot" style="background:#3a2a0a" onclick="sbColor('#3a2a0a',this)" title="Bronze"></div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:14px"><label class="fl">Couleur d'accent</label>
+        <div class="cg">
+          <div class="cdot sel" style="background:#e8620a" onclick="accentColor('#e8620a',this)" title="Orange (défaut)"></div>
+          <div class="cdot" style="background:#2563eb" onclick="accentColor('#2563eb',this)" title="Bleu"></div>
+          <div class="cdot" style="background:#16a34a" onclick="accentColor('#16a34a',this)" title="Vert"></div>
+          <div class="cdot" style="background:#7c3aed" onclick="accentColor('#7c3aed',this)" title="Violet"></div>
+          <div class="cdot" style="background:#dc2626" onclick="accentColor('#dc2626',this)" title="Rouge"></div>
+          <div class="cdot" style="background:#c9962a" onclick="accentColor('#c9962a',this)" title="Or"></div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:14px">
+        <label class="fl">Mode d'affichage</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="btn bg bsm" onclick="setTheme('dark')">🌙 Mode Sombre</button>
+          <button class="btn bg bsm" onclick="setTheme('light')">☀️ Mode Clair</button>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:14px">
+        <label class="fl">Logo de l'application</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+          <img id="logo-preview" src="data:image/png;base64,__LOGO__" style="width:56px;height:56px;object-fit:contain;border-radius:8px;background:var(--sur2);padding:4px;border:2px solid var(--bd2)">
+          <div style="flex:1">
+            <div style="font-size:12px;color:var(--t2);margin-bottom:8px;font-weight:600">Changer le logo affiché dans la sidebar et l'écran de connexion</div>
+            <label style="padding:8px 14px;background:var(--nv2);color:#fff;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+              📷 Choisir depuis galerie
+              <input type="file" accept="image/*" id="logo-file-inp" style="display:none" onchange="changeLogo(this)">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Entreprise -->
+    <div class="reg-s">
+      <div class="reg-t">🏗 Informations Entreprise</div>
+      <div class="fg"><label class="fl">Raison Sociale</label><input class="fi" id="reg-nom" value="Gabelle Matériaux de Construction"></div>
+      <div class="fg"><label class="fl">Adresse</label><input class="fi" id="reg-adr" value="Gonaïves, Artibonite, Haïti"></div>
+      <div class="fg"><label class="fl">Téléphone Principal</label><input class="fi" id="reg-tel" value="509-xxxx-xxxx"></div>
+      <div class="fg"><label class="fl">Numéro WhatsApp Business</label><input class="fi" id="reg-wa" value="50947459463"></div>
+      <div class="fg"><label class="fl">PIN Admin (changer ici)</label><input class="fi" type="password" id="reg-pin" placeholder="Nouveau PIN…"></div>
+      <button class="btn bp" onclick="saveReglages()">💾 Sauvegarder tout</button>
+    </div>
+    <!-- Taux change -->
+    <div class="reg-s">
+      <div class="reg-t">💱 Taux de Change</div>
+      <div class="al aw">⚠️ Modification réservée Admin — journalisée dans l'Audit.</div>
+      <div class="fg"><label class="fl">1 USD = ? HTG</label><input class="fi" type="number" id="reg-taux" step="0.01"></div>
+      <button class="btn bp" onclick="updateTaux()">💾 Mettre à Jour</button>
+    </div>
+    <!-- Données -->
+    <div class="reg-s">
+      <div class="reg-t">🗄 Données & Backup</div>
+      <div class="kr"><span class="kl">Stockage</span><span class="kv" id="storage-ind">🔄 Connexion cloud…</span></div>
+      <div class="kr"><span class="kl">Mode Offline</span><span class="kv"><span class="badge bg2">✅ Actif</span></span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:13px">
+        <button class="btn bg bsm" onclick="backupAll()">📤 Backup JSON</button>
+        <button class="btn bg bsm" onclick="expCSV(ventes,'Toutes_Ventes')">📊 Export CSV</button>
+        <button class="btn bsm" style="background:var(--rdd);color:#b91c1c" onclick="resetAll()">🗑 Réinitialiser</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AUDIT ══ -->
+<div class="sec" id="sec-audit">
+  <div class="sh"><div><div class="shtl">📋 Journal d'Audit</div><div class="shsb">Lecture seule · Non modifiable</div></div><button class="btn bg bsm" onclick="expCSV(audit,'Audit')">📊 Exporter</button></div>
+  <div class="al ai">🔒 Ce journal est automatique et en lecture seule. Toutes les actions sensibles y sont tracées.</div>
+  <div class="tw"><table><thead><tr><th>Horodatage</th><th>Utilisateur</th><th>Rôle</th><th>Action</th><th>Module</th><th>Détails</th></tr></thead><tbody id="aud-tb"></tbody></table></div>
+</div>
+
+</div><!-- /pc -->
+</div><!-- /ma -->
+</div><!-- /lay -->
+</div><!-- /app -->
+
+
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- PRODUIT -->
+<div class="mo" id="m-prod">
+  <div class="mdl">
+    <div class="mh"><div class="mt" id="m-prod-t">➕ Ajouter Produit</div><button class="mx" onclick="closeM('m-prod')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="pf-id">
+      <div class="fr"><div class="fg"><label class="fl">Nom *</label><input class="fi" id="pf-nom" placeholder="Ciment Portland 42.5kg"></div><div class="fg"><label class="fl">Catégorie</label><select class="fs" id="pf-cat"><option>Ciment</option><option>Fer / Acier</option><option>Sable / Gravier</option><option>Tôle / Couverture</option><option>Clous</option><option>Plomberie</option><option>Électricité</option><option>Peinture</option><option>Bois</option><option>Autre</option></select></div></div>
+      <div class="fr3"><div class="fg"><label class="fl">Stock *</label><input class="fi" type="number" id="pf-stk" min="0" step="0.01"></div><div class="fg"><label class="fl">Unité</label><select class="fs" id="pf-uni"><option>Sac</option><option>Barre</option><option>Tonne</option><option>Feuille</option><option>Caisse</option><option>Kg</option><option>L</option><option>m³</option><option>Rouleau</option><option>Unité</option></select></div><div class="fg"><label class="fl">Stock Min</label><input class="fi" type="number" id="pf-min" min="0" placeholder="10"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Prix Vente (HTG) *</label><input class="fi" type="number" id="pf-px" min="0"></div><div class="fg"><label class="fl">Prix Achat (HTG)</label><input class="fi" type="number" id="pf-pxa" min="0"><div style="font-size:10px;color:var(--tm);margin-top:3px">Pour calcul de marge</div></div></div>
+      <div class="fr">
+        <div class="fg">
+          <label class="fl">Image Produit</label>
+          <div style="display:flex;gap:7px;align-items:center;margin-bottom:6px">
+            <label style="flex:1;padding:8px 11px;background:var(--nv2);color:#fff;border-radius:var(--rs);font-size:12px;font-weight:700;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">
+              📷 Choisir depuis galerie
+              <input type="file" accept="image/*" id="pf-img-file" style="display:none" onchange="previewProdImg(this)">
+            </label>
+          </div>
+          <input class="fi" id="pf-img" placeholder="ou coller un lien URL https://…" style="font-size:11px" oninput="previewProdImgUrl(this.value)">
+          <div id="pf-img-preview" style="margin-top:7px;display:none">
+            <img id="pf-img-prev-img" style="width:100%;max-height:110px;object-fit:cover;border-radius:var(--rs);border:1px solid var(--bd2)" src="">
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Description vitrine</label><input class="fi" id="pf-desc" placeholder="Description courte…"></div>
+      </div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-prod')">Annuler</button><button class="btn bp" onclick="saveProd()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- CLIENT -->
+<div class="mo" id="m-cli">
+  <div class="mdl">
+    <div class="mh"><div class="mt" id="m-cli-t">👤 Nouveau Client</div><button class="mx" onclick="closeM('m-cli')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="clf-id">
+      <div class="fr"><div class="fg"><label class="fl">Nom *</label><input class="fi" id="clf-nom"></div><div class="fg"><label class="fl">Téléphone</label><input class="fi" id="clf-tel" placeholder="509-xxxx-xxxx"></div></div>
+      <div class="fg"><label class="fl">Adresse</label><input class="fi" id="clf-adr"></div>
+      <div class="fr"><div class="fg"><label class="fl">Limite Crédit (HTG)</label><input class="fi" type="number" id="clf-lim" placeholder="100000"></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-cli')">Annuler</button><button class="btn bp" onclick="saveCli()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- VOYAGE CAMION -->
+<div class="mo" id="m-cam">
+  <div class="mdl">
+    <div class="mh"><div class="mt">🚛 Nouveau Voyage</div><button class="mx" onclick="closeM('m-cam')">✕</button></div>
+    <div class="mbody">
+      <div class="fr"><div class="fg"><label class="fl">Date *</label><input class="fi" type="date" id="cv2-dt"></div><div class="fg"><label class="fl">Camion *</label><select class="fs" id="cv2-cam"><option>Camion Bascule #1</option><option>Camion Bascule #2</option><option>B. Ciment Cap #1</option><option>B. Ciment Cap #2</option><option>Conteneur Ciment</option><option>Camions (bus)</option></select></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Client</label><input class="fi" id="cv2-cl"></div><div class="fg"><label class="fl">Destination</label><input class="fi" id="cv2-ds"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Revenu (HTG) *</label><input class="fi" type="number" id="cv2-rv" min="0"></div><div class="fg"><label class="fl">Carburant (HTG)</label><input class="fi" type="number" id="cv2-cb" min="0"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Autres Dép. (HTG)</label><input class="fi" type="number" id="cv2-au" min="0"></div><div class="fg"><label class="fl">Chauffeur</label><input class="fi" id="cv2-ch"></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-cam')">Annuler</button><button class="btn bp" onclick="saveVoy()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- MAINTENANCE -->
+<div class="mo" id="m-maint">
+  <div class="mdl" style="max-width:420px">
+    <div class="mh"><div class="mt">🔧 Maintenance Camion</div><button class="mx" onclick="closeM('m-maint')">✕</button></div>
+    <div class="mbody">
+      <div class="fr"><div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="mt-dt"></div><div class="fg"><label class="fl">Camion</label><select class="fs" id="mt-cam"><option>Camion Bascule #1</option><option>Camion Bascule #2</option><option>B. Ciment Cap #1</option><option>B. Ciment Cap #2</option><option>Conteneur Ciment</option><option>Camions (bus)</option></select></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Type</label><select class="fs" id="mt-ty"><option>Vidange</option><option>Pneus</option><option>Freins</option><option>Moteur</option><option>Carrosserie</option><option>Autre</option></select></div><div class="fg"><label class="fl">Coût (HTG)</label><input class="fi" type="number" id="mt-co" min="0"></div></div>
+      <div class="fg"><label class="fl">Nouveau Statut</label><select class="fs" id="mt-st"><option value="disponible">🟢 Disponible</option><option value="en_route">🟠 En livraison</option><option value="panne">🔴 En panne</option></select></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-maint')">Annuler</button><button class="btn bp" onclick="saveMaint()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- EMPLOYÉ -->
+<div class="mo" id="m-emp">
+  <div class="mdl">
+    <div class="mh"><div class="mt" id="m-emp-t">👷 Nouvel Employé</div><button class="mx" onclick="closeM('m-emp')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="ef-id">
+      <div class="fr"><div class="fg"><label class="fl">Nom *</label><input class="fi" id="ef-nom"></div><div class="fg"><label class="fl">Poste *</label><input class="fi" id="ef-post" placeholder="Vendeur, Chauffeur…"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Téléphone</label><input class="fi" id="ef-tel" placeholder="509-xxxx-xxxx"></div><div class="fg"><label class="fl">Salaire/Mois (HTG) *</label><input class="fi" type="number" id="ef-sal" min="0"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Type Contrat</label><select class="fs" id="ef-type"><option>CDI</option><option>CDD</option><option>Journalier</option></select></div><div class="fg"><label class="fl">Date Embauche</label><input class="fi" type="date" id="ef-dt"></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-emp')">Annuler</button><button class="btn bp" onclick="saveEmp()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- PAIEMENT SALAIRE -->
+<div class="mo" id="m-sal">
+  <div class="mdl" style="max-width:440px">
+    <div class="mh"><div class="mt">💸 Payer le Salaire</div><button class="mx" onclick="closeM('m-sal')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="sal-eid">
+      <div id="sal-info" style="background:var(--sur2);border-radius:var(--rs);padding:14px;margin-bottom:13px"></div>
+      <div class="fr"><div class="fg"><label class="fl">Jours Travaillés</label><input class="fi" type="number" id="sal-jrs" value="26" min="0" max="31" oninput="calcSal()"></div><div class="fg"><label class="fl">Avances Reçues (HTG)</label><input class="fi" type="number" id="sal-avc" value="0" oninput="calcSal()"></div></div>
+      <div class="fg"><label class="fl">Net à Payer (HTG)</label><input class="fi" type="number" id="sal-net" readonly style="font-size:18px;font-weight:800;color:var(--or)"></div>
+      <div class="fr"><div class="fg"><label class="fl">Mode</label><select class="fs" id="sal-md"><option>Cash</option><option>Virement</option></select></div><div class="fg"><label class="fl">Mois Concerné</label><input class="fi" type="month" id="sal-mois"></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-sal')">Annuler</button><button class="btn bwa" onclick="waSalPay()">📱 WhatsApp</button><button class="btn bp" onclick="paySal()">💸 Confirmer</button></div>
+  </div>
+</div>
+
+<!-- DÉPÔT CLIENT -->
+<div class="mo" id="m-depot">
+  <div class="mdl">
+    <div class="mh"><div class="mt">🏛️ Nouveau Dépôt Client</div><button class="mx" onclick="closeM('m-depot')">✕</button></div>
+    <div class="mbody">
+      <div class="al ai">ℹ️ Client peye MAINTENANT — machandiz rete nan depo, li vin pran yo progressivement.</div>
+      <div class="fr"><div class="fg"><label class="fl">Date *</label><input class="fi" type="date" id="dep-dt"></div><div class="fg"><label class="fl">N° Reçu</label><input class="fi" id="dep-rc" placeholder="REC-DEP-001"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Client *</label><select class="fs" id="dep-cli" onchange="autoTelDep()"></select></div><div class="fg"><label class="fl">Téléphone</label><input class="fi" id="dep-tel"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Produit *</label><select class="fs" id="dep-pr"></select></div><div class="fg"><label class="fl">Quantité Payée *</label><input class="fi" type="number" id="dep-qt" step="0.01"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Montant Total Payé (HTG) *</label><input class="fi" type="number" id="dep-mt" min="0"></div><div class="fg"><label class="fl">Mode Paiement</label><select class="fs" id="dep-md"><option>Cash</option><option>Virement</option></select></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-depot')">Annuler</button><button class="btn bwa" onclick="waDepotConf()">📱 WhatsApp</button><button class="btn bp" onclick="saveDepot()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- RETRAIT DÉPÔT -->
+<div class="mo" id="m-retrait">
+  <div class="mdl" style="max-width:420px">
+    <div class="mh"><div class="mt">📦 Retrait Partiel Dépôt</div><button class="mx" onclick="closeM('m-retrait')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="ret-id">
+      <div id="ret-info" style="background:var(--sur2);border-radius:var(--rs);padding:14px;margin-bottom:13px;font-size:13px"></div>
+      <div class="fg"><label class="fl">Quantité à Récupérer *</label><input class="fi" type="number" id="ret-qt" step="0.01" placeholder="0"></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-retrait')">Annuler</button><button class="btn bwa" onclick="waRetrait()">📱 WhatsApp</button><button class="btn bp" onclick="saveRet()">✅ Confirmer Retrait</button></div>
+  </div>
+</div>
+
+<!-- FOURNISSEUR -->
+<div class="mo" id="m-fourn">
+  <div class="mdl">
+    <div class="mh"><div class="mt" id="m-fourn-t">🤝 Nouveau Fournisseur</div><button class="mx" onclick="closeM('m-fourn')">✕</button></div>
+    <div class="mbody">
+      <input type="hidden" id="ff-id">
+      <div class="fr"><div class="fg"><label class="fl">Nom *</label><input class="fi" id="ff-nom"></div><div class="fg"><label class="fl">Téléphone</label><input class="fi" id="ff-tel"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Produits Fournis</label><input class="fi" id="ff-pr" placeholder="Ciment, Fer…"></div><div class="fg"><label class="fl">Ville</label><input class="fi" id="ff-vil"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Total Dû (HTG)</label><input class="fi" type="number" id="ff-tot" min="0"></div><div class="fg"><label class="fl">Montant Payé (HTG)</label><input class="fi" type="number" id="ff-pay" min="0"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Échéance</label><input class="fi" type="date" id="ff-ech"></div><div class="fg"><label class="fl">Statut</label><select class="fs" id="ff-st"><option value="solde">✅ Soldé</option><option value="en_cours">🟡 En cours</option><option value="retard">🔴 En retard</option></select></div></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-fourn')">Annuler</button><button class="btn bp" onclick="saveFourn()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- TAUX CHANGE -->
+<div class="mo" id="m-taux">
+  <div class="mdl" style="max-width:380px">
+    <div class="mh"><div class="mt">💱 Modifier Taux de Change</div><button class="mx" onclick="closeM('m-taux')">✕</button></div>
+    <div class="mbody">
+      <div class="al aw">⚠️ Réservé Admin — journalisé dans l'Audit.</div>
+      <div class="fg"><label class="fl">1 USD = ? HTG</label><input class="fi" type="number" id="mt-tx" step="0.01"></div>
+    </div>
+    <div class="mfoot"><button class="btn bg" onclick="closeM('m-taux')">Annuler</button><button class="btn bp" onclick="updateTaux()">Confirmer</button></div>
+  </div>
+</div>
+
+<!-- FACTURE -->
+<div class="mo" id="m-fac">
+  <div class="mdl mlg">
+    <div class="mh">
+      <div class="mt">🧾 Facture Gabelle</div>
+      <div style="display:flex;gap:7px">
+        <button class="btn bwa bsm" onclick="waFac()">📱 WhatsApp</button>
+        <button class="btn bp bsm" onclick="genFactPDF()">📄 PDF</button>
+        <button class="btn bg bsm" onclick="window.print()">🖨️ Imprimer</button>
+        <button class="mx" onclick="closeM('m-fac')">✕</button>
+      </div>
+    </div>
+    <div class="mbody" id="fac-content"></div>
+  </div>
+</div>
+
+<div class="tc" id="tc"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   GABELLE ERP v4.0 — APPLICATION COMPLÈTE FONCTIONNELLE
+   Dual Role: Client (Vitrine) + Admin (ERP complet)
+   PDF · WhatsApp · Salaires · Dépôts · Offline
+═══════════════════════════════════════════════════════ */
+
+// ── CONFIG ──
+const CFG = {
+  taux: parseFloat(localStorage.getItem('g_tx') || '132'),
+  pv: localStorage.getItem('g_pv') || 'dolan',
+  role: null,
+  wa: localStorage.getItem('g_wa') || '50947459463',
+  pin: localStorage.getItem('g_pin') || 'gabelle2024',
+  sbColor: localStorage.getItem('g_sbc') || '#081b30',
+  accent: localStorage.getItem('g_acc') || '#e8620a',
+};
+
+// ── DONNÉES PAR DÉFAUT ──
+const DEF_PRODS = [
+  {id:'p01',nom:'Ciment Portland 42.5kg',cat:'Ciment',stock:700,unite:'Sac',prix:1400,pxa:1200,min:20,img:'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80',desc:'Ciment de haute qualité pour béton et maçonnerie robuste.'},
+  {id:'p02',nom:'Ciment Top Cen 42.5kg',cat:'Ciment',stock:600,unite:'Sac',prix:1500,pxa:1300,min:30,img:'https://images.unsplash.com/photo-1609982714664-a39e4b44faad?w=400&q=80',desc:'Ciment premium résistant, idéal pour structures portantes.'},
+  {id:'p03',nom:'Fer 1/2 (Tonne)',cat:'Fer / Acier',stock:30,unite:'Tonne',prix:75000,pxa:68000,min:2,img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',desc:'Fer d\'armature haute résistance pour béton armé.'},
+  {id:'p04',nom:'Sable Labadie (Camion)',cat:'Sable / Gravier',stock:15,unite:'Camion',prix:15000,pxa:12000,min:2,img:'https://images.unsplash.com/photo-1604147706283-d7119b5b822c?w=400&q=80',desc:'Sable lavé idéal pour crépissage et maçonnerie.'},
+  {id:'p05',nom:'Gravier 3/4 (Camion)',cat:'Sable / Gravier',stock:12,unite:'Camion',prix:18500,pxa:15000,min:2,img:'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=400&q=80',desc:'Gravier concassé propre pour béton ultra résistant.'},
+  {id:'p06',nom:'Clous 6 (Litre)',cat:'Clous',stock:30,unite:'L',prix:250,pxa:200,min:5,img:'',desc:'Clous de construction standard.'},
+  {id:'p07',nom:'Tôle (Feuille)',cat:'Tôle / Couverture',stock:0,unite:'Feuille',prix:0,pxa:0,min:20,img:'',desc:'Tôle de couverture galvanisée.'},
+  {id:'p08',nom:'Fer 1/4 (Tonne)',cat:'Fer / Acier',stock:0,unite:'Tonne',prix:0,pxa:0,min:2,img:'',desc:'Fer d\'armature diamètre 1/4.'},
+];
+const DEF_CLIENTS = [
+  {id:'cl1',nom:'Jean Pierre',tel:'50937000001',adr:'Centre-ville, Gonaïves',lim:100000,cred:0,mc:''},
+  {id:'cl2',nom:'Marie Luc',tel:'50937000002',adr:'Quartier Carénage',lim:50000,cred:1250,mc:''},
+];
+const DEF_EMP = [
+  {id:'e1',nom:'André Jean',post:'Caissier / Vendeur',tel:'50937000010',sal:25000,type:'CDI',dt:'2024-01-01',actif:true},
+  {id:'e2',nom:'Marie Rose',post:'Comptable',tel:'50937000011',sal:35000,type:'CDI',dt:'2024-03-01',actif:true},
+  {id:'e3',nom:'Jacques Pierre',post:'Chauffeur',tel:'50937000012',sal:22000,type:'CDI',dt:'2023-06-01',actif:true},
+];
+const DEF_CAM = [{id:'c1',date:'2026-05-25',cam:'Camions (bus)',cl:'UNDH',ds:'CAP-Haïtien',rv:150000,cb:34000,au:42500,ch:'Blanc',bn:73500}];
+const DEF_FOURN = [
+  {id:'f1',nom:'Cimenterie Nationale',tel:'—',pr:'Ciment',tot:50000,pay:20000,rst:30000,ech:'2026-06-12',st:'en_cours'},
+  {id:'f2',nom:'Quincaillerie du Nord',tel:'—',pr:'Fer/Clous/Tôles',tot:0,pay:0,rst:0,ech:'',st:'solde'},
+];
+const DEF_FLOTTE = [
+  {id:'t1',nom:'Camion Bascule #1',st:'disponible',ch:'Blanc'},
+  {id:'t2',nom:'Camion Bascule #2',st:'disponible',ch:'Noir'},
+  {id:'t3',nom:'B. Ciment Cap #1',st:'en_route',ch:'Dupont'},
+  {id:'t4',nom:'B. Ciment Cap #2',st:'panne',ch:'—'},
+  {id:'t5',nom:'Conteneur Ciment',st:'disponible',ch:'Marc'},
+  {id:'t6',nom:'Camions (bus)',st:'disponible',ch:'Blanc'},
+];
+
+// ══════════════════════════════════════════
+// SUPABASE CONFIG — remplacer par vos clés
+// ══════════════════════════════════════════
+const SUPA_URL = 'https://ddroxdxyroxvkhhtzgdw.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcm94ZHh5cm92eGtoaHR6Z2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNjM5OTksImV4cCI6MjA5NzgzOTk5OX0.jXd64VOJmTj1LM2f8IYno0wXF5_BRNyHpka-QC_f4ek';
+const _supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── TABLES SUPABASE ──
+// prods, ventes, achats, camions, clients,
+// fournisseurs, employes, paieSal, depots,
+// audit, flotte — chacune avec col "data" JSONB
+
+// ── CACHE LOCAL (vitesse) ──
+function ld(k,d){try{return JSON.parse(localStorage.getItem('g_'+k))||d;}catch(e){return d;}}
+function sd(k,v){localStorage.setItem('g_'+k,JSON.stringify(v));}
+
+let prods=ld('prods',DEF_PRODS), ventes=ld('ventes',[]), achats=ld('achats',[]);
+let camions=ld('camions',DEF_CAM), clients=ld('clients',DEF_CLIENTS);
+let fournisseurs=ld('fournisseurs',DEF_FOURN), employes=ld('employes',DEF_EMP);
+let paieSal=ld('paieSal',[]), depots=ld('depots',[]);
+let audit=ld('audit',[]), flotte=ld('flotte',DEF_FLOTTE);
+let panier=[], panierCli=[], currentFac=null;
+let facNum=parseInt(localStorage.getItem('g_fn')||'2');
+
+// ── SUPABASE SYNC ──
+const TABLES=['prods','ventes','achats','camions','clients','fournisseurs','employes','paieSal','depots','audit','flotte'];
+
+async function supaLoad(k){
+  try{
+    const {data,error}=await _supa.from('gabelle_data').select('val').eq('k',k).single();
+    if(error||!data)return null;
+    return JSON.parse(data.val);
+  }catch(e){return null;}
+}
+
+async function supaSave(k,v){
+  try{
+    sd(k,v); // cache local immédiat
+    await _supa.from('gabelle_data').upsert({k,val:JSON.stringify(v)},{onConflict:'k'});
+  }catch(e){console.warn('Supabase save error:',e);}
+}
+
+async function loadAllFromSupabase(){
+  const vars={prods:DEF_PRODS,ventes:[],achats:[],camions:DEF_CAM,clients:DEF_CLIENTS,
+    fournisseurs:DEF_FOURN,employes:DEF_EMP,paieSal:[],depots:[],audit:[],flotte:DEF_FLOTTE};
+  await Promise.all(TABLES.map(async k=>{
+    const remote=await supaLoad(k);
+    if(remote!==null){
+      eval(k+'=remote');
+      sd(k,remote);
+    }
+  }));
+  const fn=await supaLoad('facNum');
+  if(fn!==null){facNum=fn;localStorage.setItem('g_fn',fn);}
+}
+
+// Sync temps réel — écoute les changements
+function startRealtimeSync(){
+  _supa.channel('gabelle-sync')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'gabelle_data'},payload=>{
+      const {k,val}=payload.new;
+      if(!TABLES.includes(k))return;
+      try{
+        const parsed=JSON.parse(val);
+        eval(k+'=parsed');
+        sd(k,parsed);
+        // Rafraîchir la section active
+        const sec=document.querySelector('.sec.active');
+        if(sec&&window['render'+k.charAt(0).toUpperCase()+k.slice(1)])
+          window['render'+k.charAt(0).toUpperCase()+k.slice(1)]();
+        renderDB && renderDB();
+      }catch(e){}
+    })
+    .subscribe();
+}
+
+function saveAll(){
+  ['prods','ventes','achats','camions','clients','fournisseurs','employes','paieSal','depots','audit','flotte'].forEach(k=>{
+    sd(k,eval(k)); // cache local immédiat
+    supaSave(k,eval(k)); // cloud async
+  });
+}
+
+// ── HELPERS ──
+const g=id=>document.getElementById(id);
+const gv=id=>g(id)?.value||'';
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function fmt(n){return(parseFloat(n)||0).toLocaleString('fr-FR');}
+function fmtM(n){return fmt(n)+' HTG';}
+function td(){return new Date().toISOString().split('T')[0];}
+function nt(){return new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
+function nf(){facNum++;localStorage.setItem('g_fn',facNum);supaSave('facNum',facNum);return'FAC-'+String(facNum).padStart(3,'0');}
+function addAudit(action,mod,det){
+  audit.unshift({id:uid(),ts:new Date().toLocaleString('fr-FR'),usr:CFG.role==='admin'?'Admin Gabelle':'Client',role:CFG.role||'—',action,mod,det});
+  if(audit.length>500)audit=audit.slice(0,500);sd('audit',audit);
+}
+
+// ── TOAST ──
+function toast(msg,type='info',dur=3200){
+  const c=g('tc'),t=document.createElement('div');
+  t.className='tst '+type;
+  const ic={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+  t.innerHTML=`<span>${ic[type]||'📢'}</span><span style="flex:1">${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(38px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},dur);
+}
+
+// ── LOGIN ──
+function showPin(){
+  const b=g('pin-box');b.style.display=b.style.display==='block'?'none':'block';
+  if(b.style.display==='block')g('pin-inp').focus();
+}
+function checkPin(){
+  if(gv('pin-inp')===CFG.pin){enterApp('admin');}
+  else{toast('PIN incorrect. Contactez l\'administrateur.','error');}
+}
+function enterClient(){enterApp('client');}
+
+function enterApp(role){
+  CFG.role=role;
+  g('login').style.display='none';g('app').style.display='block';
+  buildNav(role);
+  // Appliquer couleurs sauvegardées
+  applySbColor(CFG.sbColor);
+  if(CFG.accent){document.documentElement.style.setProperty('--or',CFG.accent);document.documentElement.style.setProperty('--or2',CFG.accent);}
+  const th=localStorage.getItem('g_th')||'dark';
+  document.documentElement.setAttribute('data-theme',th);
+  g('th-btn').textContent=th==='dark'?'🌙':'☀️';
+  if(role==='admin'){
+    g('pv-sw').style.display='flex';
+    g('sb-cfg').style.display='block';
+    g('tb-pv').style.display='flex';
+    g('alert-btn').style.display='flex';
+    const bap=g('btn-add-prod');if(bap)bap.style.display='flex';
+    g('sb-role').className='sb-role ar';
+    g('sb-role').textContent='💼 Espace Administrateur';
+    if(window.innerWidth>=768)g('ma').classList.remove('full');
+    const rt=g('reg-taux');if(rt)rt.value=CFG.taux;
+    const mt=g('mt-tx');if(mt)mt.value=CFG.taux;
+    goSec('sec-dashboard');
+    addAudit('Connexion','Auth','Admin connecté');
+  } else {
+    g('pv-sw').style.display='none';
+    g('sb-cfg').style.display='none';
+    g('tb-pv').style.display='none';
+    g('alert-btn').style.display='none';
+    g('sb-role').className='sb-role cr';
+    g('sb-role').textContent='🛒 Espace Client';
+    if(window.innerWidth<768)g('ma').classList.add('full');
+    goSec('sec-vitrine');
+  }
+}
+
+function doLogout(){
+  addAudit('Déconnexion','Auth',CFG.role+' déconnecté');
+  saveAll();CFG.role=null;
+  g('login').style.display='flex';g('app').style.display='none';
+  panier=[];panierCli=[];currentFac=null;
+  g('pin-inp').value='';g('pin-box').style.display='none';
+}
+
+// ── NAV ──
+const ADMIN_NAV=[
+  {id:'sec-dashboard',ic:'📊',lb:'Tableau de Bord'},
+  {id:'sec-ventes',ic:'🛒',lb:'Ventes & Caisse'},
+  {id:'sec-stock',ic:'📦',lb:'Stock'},
+  {id:'sec-camions',ic:'🚛',lb:'Camions'},
+  {id:'sec-clients',ic:'👥',lb:'Clients'},
+  {id:'sec-depots',ic:'🏛️',lb:'Dépôts'},
+  {id:'sec-employes',ic:'👷',lb:'Employés'},
+  {id:'sec-fournisseurs',ic:'🤝',lb:'Fournisseurs'},
+  {id:'sec-caisse',ic:'🏦',lb:'Caisse'},
+  {id:'sec-rapports',ic:'📈',lb:'Rapports'},
+  {id:'sec-conv',ic:'💱',lb:'Convertisseur'},
+  {id:'sec-reglages',ic:'⚙️',lb:'Réglages'},
+  {id:'sec-audit',ic:'📋',lb:'Audit'},
+];
+const CLIENT_NAV=[
+  {id:'sec-vitrine',ic:'🏗️',lb:'Boutique'},
+  {id:'sec-panier',ic:'🛒',lb:'Mon Panier'},
+];
+function buildNav(role){
+  const items=role==='admin'?ADMIN_NAV:CLIENT_NAV;
+  g('main-nav').innerHTML=items.map(i=>`<div class="ni" onclick="goSec('${i.id}')" data-sec="${i.id}" style="position:relative"><span class="ic">${i.ic}</span><span>${i.lb}</span>${i.id==='sec-panier'?'<span id="cart-badge" style="display:none;position:absolute;top:4px;right:4px;min-width:17px;height:17px;background:var(--or);color:#fff;border-radius:50%;font-size:10px;font-weight:800;line-height:17px;text-align:center;padding:0 3px">0</span>':''}</div>`).join('');
+}
+const TITLES={'sec-dashboard':'Tableau de Bord','sec-vitrine':'Boutique Gabelle','sec-panier':'Mon Panier','sec-ventes':'Ventes & Caisse','sec-stock':'Stock & Inventaire','sec-camions':'Flotte de Camions','sec-clients':'Clients & Crédits','sec-depots':'Dépôts Clients','sec-employes':'Employés & Salaires','sec-fournisseurs':'Fournisseurs','sec-caisse':'Clôture de Caisse','sec-rapports':'Rapports & KPIs','sec-conv':'Convertisseur HTG/USD','sec-reglages':'Réglages & Paramètres','sec-audit':"Journal d'Audit"};
+function goSec(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const s=g(id);if(s)s.classList.add('active');
+  document.querySelectorAll(`[data-sec="${id}"]`).forEach(n=>n.classList.add('active'));
+  const ttl=g('tb-ttl');if(ttl)ttl.textContent=TITLES[id]||id;
+  refreshSec(id);
+}
+function refreshSec(id){
+  const m={'sec-vitrine':renderVitrine,'sec-panier':renderPanierCli,'sec-dashboard':renderDB,
+    'sec-stock':renderStock,'sec-ventes':renderVUI,'sec-camions':renderCamions,
+    'sec-clients':renderClients,'sec-depots':renderDepots,'sec-employes':renderEmployes,
+    'sec-fournisseurs':renderFourn,'sec-caisse':renderCaisse,'sec-rapports':renderRapports,
+    'sec-conv':renderConv,'sec-audit':renderAudit};
+  if(m[id])m[id]();
+}
+
+// ── SIDEBAR ──
+function toggleSB(){
+  const sb=g('sb'),ma=g('ma');
+  if(window.innerWidth<768){sb.classList.toggle('hi');}
+  else{sb.classList.toggle('hi');ma.classList.toggle('full');}
+}
+
+// ── THEME ──
+function toggleTheme(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('g_th',t);
+  const b=g('th-btn');if(b)b.textContent=t==='dark'?'🌙':'☀️';
+}
+
+// ── PV ──
+function setPV(pv,btn){
+  CFG.pv=pv;localStorage.setItem('g_pv',pv);
+  document.querySelectorAll('.pvb').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const l=pv==='dolan'?'Gabelle Dolan':'Pont Quenêpe';
+  const tb=g('tb-pv');if(tb)tb.textContent='📍 '+l;
+}
+
+// ── MODALS ──
+function openM(id){
+  const el=g(id);if(!el)return;
+  el.classList.add('open');
+  el.querySelectorAll('input[type="date"]').forEach(i=>{if(!i.value&&!i.readOnly)i.value=td();});
+  if(id==='m-depot')fillDepotSels();
+  if(id==='m-taux'||id==='m-conv'){const e=g('mt-tx');if(e)e.value=CFG.taux;}
+}
+function closeM(id){const el=g(id);if(el)el.classList.remove('open');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function fillDepotSels(){
+  const cs=g('dep-cli');if(cs)cs.innerHTML='<option value="">Choisir…</option>'+clients.map(c=>`<option value="${c.id}" data-tel="${c.tel}">${c.nom}</option>`).join('');
+  const ps=g('dep-pr');if(ps)ps.innerHTML='<option value="">Choisir…</option>'+prods.filter(p=>p.stock>0&&p.prix>0).map(p=>`<option value="${p.id}">${p.nom} (${fmt(p.stock)} ${p.unite})</option>`).join('');
+}
+function autoTelDep(){const s=g('dep-cli');const o=s?.options[s.selectedIndex];const t=g('dep-tel');if(t)t.value=o?.getAttribute('data-tel')||'';}
+function openDepotF(){fillDepotSels();const dr=g('dep-rc');if(dr)dr.value='REC-DEP-'+String(depots.length+1).padStart(3,'0');openM('m-depot');}
+
+
+
+// ── VITRINE CLIENT ──
+function renderVitrine(){
+  const grid=g('vitrine-grid');if(!grid)return;
+  const dispo=prods.filter(p=>p.prix>0);
+  if(!dispo.length){grid.innerHTML='<div class="es"><div class="ei">📦</div><div class="et">Aucun produit disponible</div></div>';return;}
+  grid.innerHTML=dispo.map(p=>{
+    const ok=p.stock>0;
+    return `<div class="prc">
+      <img class="prc-img" src="${p.img||''}" alt="${p.nom}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22170%22><rect fill=%22%231f3555%22 width=%22400%22 height=%22170%22/><text x=%22200%22 y=%2290%22 text-anchor=%22middle%22 fill=%22%235a7090%22 font-size=%2248%22>📦</text></svg>'">
+      <div class="prc-b">
+        <div class="prc-bdg">
+          <span class="pbdg pbh">🔥 Top Ventes</span>
+          <span class="pbdg ${ok?'pbg':'pbr'}">${ok?'✅ Disponible':'❌ Rupture'}</span>
+        </div>
+        <div class="prc-n">${p.nom}</div>
+        <div class="prc-d">${p.desc||p.cat}</div>
+        <div class="prc-p">${fmt(p.prix)} HTG <span style="font-size:12px;color:var(--tm)">/ ${p.unite}</span></div>
+        <div class="prc-s">Stock: <strong style="color:${ok?'var(--gr)':'var(--rd)'}">${fmt(p.stock)} ${p.unite}</strong></div>
+        <div class="qr">
+          <span class="ql">Quantité:</span>
+          <input type="number" class="qi" id="qty-${p.id}" value="1" min="1" max="${p.stock}" oninput="updQty('${p.id}',${p.prix})">
+          <span class="qt" id="tot-${p.id}">${fmt(p.prix)} HTG</span>
+        </div>
+        <div class="prc-btns">
+          ${ok?`<button class="btn bp" onclick="ajouterPanCli('${p.id}')">🛒 Ajouter</button>`:'<button class="btn bg" disabled style="opacity:.5">❌ Rupture</button>'}
+          <button class="btn bwa" onclick="waCmd('${p.nom}','qty-${p.id}',${p.prix})">📱 WA</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function updQty(pid,prix){
+  const q=parseFloat(g('qty-'+pid)?.value)||1;
+  const t=g('tot-'+pid);if(t)t.textContent=fmt(q*prix)+' HTG';
+}
+function ajouterPanCli(pid){
+  const p=prods.find(x=>x.id===pid);if(!p)return;
+  const q=parseFloat(g('qty-'+pid)?.value)||1;
+  if(q>p.stock){toast('Quantité supérieure au stock disponible','error');return;}
+  const ex=panierCli.find(x=>x.pid===pid);
+  if(ex)ex.q+=q;else panierCli.push({pid,nom:p.nom,unite:p.unite,q,prix:p.prix,tot:0});
+  panierCli.forEach(l=>l.tot=l.q*l.prix);
+  toast(p.nom+' ajouté au panier ✅','success',2000);
+  goSec('sec-panier');
+}
+function viderPanCli(){panierCli=[];renderPanierCli();updateCartBadge();}
+function renderPanierCli(){
+  const tot=panierCli.reduce((s,l)=>s+l.tot,0);
+  const ci=g('pan-cli-items'),ct=g('pan-cli-tot');
+  if(!panierCli.length){ci.innerHTML='<div class="es"><div class="ei">🛒</div><div class="et">Panier vide — ajoutez des produits depuis la Boutique</div></div>';if(ct)ct.style.display='none';return;}
+  ci.innerHTML=panierCli.map((l,i)=>`<div class="pi"><div style="flex:1"><div style="font-weight:700;color:var(--t1)">${l.nom}</div><div style="font-size:11px;color:var(--tm)">${fmt(l.q)} ${l.unite} × ${fmt(l.prix)} HTG</div></div><div style="font-weight:800;color:var(--or)">${fmtM(l.tot)}</div><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="panierCli.splice(${i},1);renderPanierCli()">✕</button></div>`).join('');
+  const ps=g('pcli-sub');if(ps)ps.textContent=fmtM(tot);
+  const pt=g('pcli-tot');if(pt)pt.textContent=fmtM(tot);
+  if(ct)ct.style.display='block';
+}
+function cmdWA(){
+  const tot=panierCli.reduce((s,l)=>s+l.tot,0);if(!tot){toast('Panier vide','error');return;}
+  const nom=gv('pcli-nom'),tel=gv('pcli-tel');
+  if(!nom||!tel){toast('Nom et téléphone requis','error');return;}
+  const items=panierCli.map(l=>`• ${l.nom}: ${fmt(l.q)} ${l.unite} — ${fmtM(l.tot)}`).join('\n');
+  const msg=`Bonjou Gabelle ! 👋\n\n🛒 *Nouvelle Commande*\n👤 ${nom}\n📞 ${tel}\n📍 ${gv('pcli-adr')||'—'}\n\n📦 *Produits:*\n${items}\n\n💰 *Total: ${fmtM(tot)}*\n\nMèsi !`;
+  window.open('https://wa.me/'+CFG.wa+'?text='+encodeURIComponent(msg),'_blank');
+  addAudit('Commande WhatsApp','Vitrine',nom+' — '+fmtM(tot));
+}
+
+// ── DASHBOARD ──
+function renderDB(){
+  const M=new Date().getMonth(),Y=new Date().getFullYear(),D=td();
+  const vj=ventes.filter(v=>v.date===D).reduce((s,v)=>s+v.tot,0);
+  const vm=ventes.filter(v=>v.date&&new Date(v.date).getMonth()===M&&new Date(v.date).getFullYear()===Y).reduce((s,v)=>s+v.tot,0);
+  const vs=prods.reduce((s,p)=>s+(p.prix*p.stock),0);
+  const cr=clients.reduce((s,c)=>s+(c.cred||0),0);
+  const camM=camions.filter(c=>c.date&&new Date(c.date).getMonth()===M&&new Date(c.date).getFullYear()===Y);
+  const camR=camM.reduce((s,c)=>s+c.rv,0);const camD=camM.reduce((s,c)=>s+c.cb+c.au,0);
+  const masseSal=employes.filter(e=>e.actif).reduce((s,e)=>s+e.sal,0);
+  const net=vm+camR-camD-masseSal;
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('db-vj',fmt(vj));S('db-vm',fmt(vm));S('db-vs',fmt(vs));S('db-cr',fmt(cr));
+  S('rn-v',fmtM(vm));S('rn-c',fmtM(camR));S('rn-s',fmtM(masseSal));S('rn-d',fmtM(camD));S('rn-net',fmtM(net));
+  // Alertes
+  const al=prods.filter(p=>p.stock<=p.min);
+  const at=g('db-al');if(at)at.innerHTML=al.length?al.map(p=>`<tr><td><strong>${p.nom}</strong></td><td class="n" style="color:${p.stock===0?'var(--rd)':'var(--yw)'}">${fmt(p.stock)}</td><td><span class="badge ${p.stock===0?'brd':'byw'}">${p.stock===0?'🔴 Rupture':'⚠️ Faible'}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:14px"><div class="et">✅ Stocks OK</div></div></td></tr>';
+  const ndot=g('ndot');if(ndot)ndot.style.display=al.length?'':'none';
+  // Dernières ventes
+  const lv=g('db-lv');if(lv){const l=[...ventes].slice(-5).reverse();lv.innerHTML=l.length?l.map(v=>`<tr><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';}
+  // Flotte
+  const fl=g('db-fl');if(fl){const grp={};camM.forEach(c=>{if(!grp[c.cam])grp[c.cam]={v:0,b:0};grp[c.cam].v++;grp[c.cam].b+=c.bn;});fl.innerHTML=Object.keys(grp).length?Object.entries(grp).map(([n,d])=>`<tr><td style="font-size:12px">${n}</td><td>${d.v}</td><td class="n" style="color:var(--gr)">${fmtM(d.b)}</td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:12px"><div class="et">Aucun voyage ce mois</div></div></td></tr>';}
+}
+
+// ── STOCK ──
+function renderStock(){
+  const q=(gv('sk-q')||'').toLowerCase(),cat=gv('sk-cat');
+  let list=prods;if(q)list=list.filter(p=>p.nom.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));if(cat)list=list.filter(p=>p.cat===cat);
+  const tot=list.reduce((s,p)=>s+(p.prix*p.stock),0);
+  const sub=g('sk-sub');if(sub)sub.textContent=`${list.length} produits · Valeur totale : ${fmtM(tot)}`;
+  const tb=g('sk-tb');if(!tb)return;
+  tb.innerHTML=list.length?list.map(p=>{
+    let c2,tx;if(p.stock===0){c2='brd';tx='🔴 Rupture';}else if(p.stock<=p.min){c2='byw';tx='⚠️ Faible';}else{c2='bg2';tx='✅ OK';}
+    return `<tr><td><strong>${p.nom}</strong></td><td><span class="tag">${p.cat}</span></td><td class="n" style="color:${p.stock===0?'var(--rd)':p.stock<=p.min?'var(--yw)':'var(--gr)'}">${fmt(p.stock)}</td><td>${p.unite}</td><td class="n">${fmtM(p.prix)}</td><td class="n">${fmtM(p.prix*p.stock)}</td><td class="n">${p.min}</td><td><span class="badge ${c2}">${tx}</span></td><td style="display:flex;gap:3px"><button class="btn bg bxs" onclick="openPF('${p.id}')">✏️</button><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="delProd('${p.id}')">🗑</button></td></tr>`;
+  }).join(''):'<tr><td colspan="9"><div class="es"><div class="ei">📦</div><div class="et">Aucun produit</div></div></td></tr>';
+}
+function openPF(id){
+  if(CFG.role!=='admin'){toast('Accès réservé à l\'administrateur','error');return;}
+  const p=id?prods.find(x=>x.id===id):null;
+  g('pf-id').value=p?.id||'';g('pf-nom').value=p?.nom||'';g('pf-stk').value=p?.stock||'';
+  g('pf-px').value=p?.prix||'';g('pf-pxa').value=p?.pxa||'';g('pf-min').value=p?.min||'';
+  const pfi=g('pf-img');if(pfi){pfi.value=p?.img?.startsWith('data:')?'':p?.img||'';pfi.removeAttribute('data-b64');}g('pf-desc').value=p?.desc||'';
+  const pv=g('pf-img-preview'),pi=g('pf-img-prev-img');
+  if(pv&&pi&&p?.img){pi.src=p.img;pv.style.display='block';}else if(pv)pv.style.display='none';
+  if(p){try{g('pf-cat').value=p.cat;g('pf-uni').value=p.unite;}catch(e){}}
+  g('m-prod-t').textContent=p?'✏️ Modifier Produit':'➕ Ajouter Produit';
+  openM('m-prod');
+}
+function saveProd(){
+  const id=gv('pf-id'),nom=gv('pf-nom').trim();if(!nom){toast('Nom requis','error');return;}
+  const imgEl=g('pf-img');const imgVal=imgEl?.getAttribute('data-b64')||gv('pf-img');const p={id:id||uid(),nom,cat:gv('pf-cat'),stock:parseFloat(gv('pf-stk'))||0,unite:gv('pf-uni'),prix:parseFloat(gv('pf-px'))||0,pxa:parseFloat(gv('pf-pxa'))||0,min:parseFloat(gv('pf-min'))||10,img:imgVal,desc:gv('pf-desc')};
+  if(id){const i=prods.findIndex(x=>x.id===id);prods[i]=p;}else prods.push(p);
+  addAudit(id?'Modif. Produit':'Ajout Produit','Stock',p.nom+' — '+fmt(p.stock)+' @ '+fmtM(p.prix));
+  saveAll();closeM('m-prod');renderStock();renderVitrine();toast('Produit enregistré ✅','success');
+}
+function delProd(id){
+  const p=prods.find(x=>x.id===id);
+  if(!confirm('Supprimer "'+p?.nom+'" ?'))return;
+  prods=prods.filter(x=>x.id!==id);addAudit('Suppression Produit','Stock',p?.nom);
+  saveAll();renderStock();toast('Supprimé','warning');
+}
+
+// ── VENTES ADMIN ──
+function renderVUI(){
+  const fn=g('v-fac');if(fn)fn.value='FAC-'+String(facNum+1).padStart(3,'0');
+  const pp=g('v-prd');if(pp)pp.innerHTML='<option value="">Choisir produit…</option>'+prods.filter(p=>p.stock>0&&p.prix>0).map(p=>`<option value="${p.id}">${p.nom} (${fmt(p.stock)} ${p.unite})</option>`).join('');
+  const cp=g('v-cli');if(cp)cp.innerHTML='<option value="">— Client comptant —</option>'+clients.map(c=>`<option value="${c.id}">${c.nom}</option>`).join('');
+  renderPan();renderVJour();
+}
+function updDev(){const d=gv('v-dev');const dl=g('v-dl');if(dl)dl.textContent=d;}
+function updPx(){const pid=gv('v-prd'),p=prods.find(x=>x.id===pid);if(!p)return;const d=gv('v-dev');g('v-pri').value=d==='USD'?Math.round(p.prix/CFG.taux*100)/100:p.prix;}
+function addPan(){
+  const pid=gv('v-prd');if(!pid){toast('Choisissez un produit','error');return;}
+  const p=prods.find(x=>x.id===pid);const q=parseFloat(gv('v-qte'))||0,px=parseFloat(gv('v-pri'))||0,d=gv('v-dev');
+  if(!q||!px){toast('Quantité et prix requis','error');return;}
+  if(q>p.stock){toast('Stock insuffisant ('+fmt(p.stock)+' '+p.unite+')','error');return;}
+  const pxH=d==='USD'?Math.round(px*CFG.taux):px;
+  const ex=panier.find(x=>x.pid===pid);
+  if(ex){ex.q+=q;ex.tot=ex.q*ex.pxH;}else panier.push({pid,nom:p.nom,unite:p.unite,q,px,pxH,d,tot:q*pxH});
+  renderPan();g('v-qte').value=1;g('v-prd').value='';g('v-pri').value='';
+  toast(p.nom+' ajouté','success',1800);
+}
+function delPanItem(i){panier.splice(i,1);renderPan();}
+function clearPan(){panier=[];renderPan();}
+function renderPan(){
+  const ci=g('pan-adm-items'),ct=g('pan-adm-tot');
+  if(!panier.length){if(ci)ci.innerHTML='<div class="es" style="padding:22px"><div class="ei">🛒</div><div class="et">Panier vide</div></div>';if(ct)ct.style.display='none';return;}
+  if(ci)ci.innerHTML=panier.map((l,i)=>`<div class="pi"><div style="flex:1"><div style="font-weight:700;color:var(--t1)">${l.nom}</div><div style="font-size:11px;color:var(--tm)">${fmt(l.q)} ${l.unite} × ${fmt(l.px)} ${l.d}</div></div><div style="font-weight:800;color:var(--or)">${fmtM(l.tot)}</div><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="delPanItem(${i})">✕</button></div>`).join('');
+  const tot=panier.reduce((s,l)=>s+l.tot,0);
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('p-sub',fmtM(tot));S('p-tot',fmtM(tot));
+  const pu=g('p-usd');if(pu)pu.textContent='≈ $'+(tot/CFG.taux).toFixed(2)+' USD';
+  if(ct)ct.style.display='block';calcReste();
+}
+function calcReste(){
+  const tot=panier.reduce((s,l)=>s+l.tot,0);const avc=parseFloat(gv('p-avc'))||0;const rst=tot-avc;
+  const rr=g('p-rrow'),rv=g('p-rst');
+  if(rr&&rv){rr.style.display=avc>0?'flex':'none';rv.textContent=fmtM(Math.max(0,rst));}
+}
+function confirmerVente(){
+  if(!panier.length){toast('Panier vide','error');return;}
+  const mod=gv('v-mod'),cid=gv('v-cli');
+  if(mod==='credit'&&!cid){toast('Crédit nécessite un client','error');return;}
+  const tot=panier.reduce((s,l)=>s+l.tot,0);const avc=parseFloat(gv('p-avc'))||tot;const rst=Math.max(0,tot-avc);
+  const fac=nf();
+  panier.forEach(l=>{const p=prods.find(x=>x.id===l.pid);if(p)p.stock=Math.max(0,p.stock-l.q);});
+  if(mod==='credit'&&cid){const c=clients.find(x=>x.id===cid);if(c)c.cred=(c.cred||0)+rst;}
+  const cli=cid?(clients.find(x=>x.id===cid)?.nom||'?'):'Client comptant';
+  const v={id:uid(),fac,date:td(),hr:nt(),cli,cid,prd:panier.map(l=>l.nom).join(', '),lignes:[...panier],qte:panier.reduce((s,l)=>s+l.q,0),tot,dev:gv('v-dev'),mod,avc,rst,stat:rst>0?'⏳ Partiel':'✅ Soldé',vnd:gv('v-vnd'),nte:gv('v-nte')};
+  ventes.push(v);currentFac=v;
+  addAudit('Vente','Ventes',fac+' — '+cli+' — '+fmtM(tot)+' — '+mod);
+  saveAll();panier=[];showFac(v);renderVUI();renderDB();
+  toast('Vente '+fac+' confirmée ! '+fmtM(tot),'success');
+}
+function renderVJour(){
+  const tb=g('v-jour');if(!tb)return;
+  const l=ventes.filter(v=>v.date===td()).reverse().slice(0,8);
+  tb.innerHTML=l.length?l.map(v=>`<tr><td>${v.hr||'—'}</td><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td>${v.mod}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td></tr>`).join(''):'<tr><td colspan="5"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';
+}
+function toggleHistV(){const c=g('hist-v-card');if(c){c.style.display=c.style.display==='none'?'':'none';renderHistV();}}
+function renderHistV(){
+  const tb=g('hv-tb');if(!tb)return;
+  const df=gv('hv-df'),dt=gv('hv-dt');
+  let l=[...ventes].reverse();if(df)l=l.filter(v=>v.date>=df);if(dt)l=l.filter(v=>v.date<=dt);
+  tb.innerHTML=l.length?l.map(v=>`<tr><td>${v.date}</td><td style="color:var(--or)">${v.fac}</td><td>${v.cli}</td><td style="font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.prd}</td><td class="n">${fmtM(v.tot)}</td><td>${v.mod}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td><td style="display:flex;gap:3px"><button class="btn bg bxs" onclick="showFacById('${v.id}')">🧾</button><button class="btn bwa bxs" onclick="waVente('${v.id}')">📱</button></td></tr>`).join(''):'<tr><td colspan="8"><div class="es"><div class="et">Aucune vente</div></div></td></tr>';
+}
+function showFacById(id){const v=ventes.find(x=>x.id===id);if(v)showFac(v);}
+
+// ── FACTURE ──
+function showFac(v){
+  currentFac=v;
+  const lignes=v.lignes?.length?v.lignes:[{nom:v.prd,q:v.qte,pxH:(v.tot/Math.max(v.qte||1,1)),unite:'',tot:v.tot}];
+  g('fac-content').innerHTML=`<div style="font-family:Inter,sans-serif;max-width:560px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:var(--nv)">GABELLE</div><div style="font-size:11px;color:var(--tm)">Matériaux de Construction</div><div style="font-size:11px;color:var(--tm)">Gonaïves, Artibonite, Haïti</div></div>
+      <div style="text-align:right"><div style="font-size:18px;font-weight:800;color:var(--or)">${v.fac}</div><div style="font-size:11px;color:var(--tm)">${v.date} ${v.hr||''}</div><div style="font-size:11px;color:var(--tm)">Vendeur: ${v.vnd||'—'}</div></div>
+    </div>
+    <div style="background:var(--sur2);border-radius:8px;padding:12px;margin-bottom:16px"><div style="font-size:10px;color:var(--tm);text-transform:uppercase">FACTURÉ À</div><div style="font-size:15px;font-weight:700;color:var(--t1)">${v.cli}</div><div style="font-size:12px;color:var(--tm)">Mode: ${v.mod}</div></div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:13px">
+      <thead><tr style="background:var(--nv3)"><th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.7);text-transform:uppercase">Produit</th><th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.7)">Qté</th><th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.7)">Prix HTG</th><th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.7)">Total HTG</th></tr></thead>
+      <tbody>${lignes.map(l=>`<tr style="border-bottom:1px solid var(--bd)"><td style="padding:8px 12px;font-size:13px">${l.nom}</td><td style="padding:8px 12px;text-align:right;font-size:13px">${fmt(l.q)} ${l.unite||''}</td><td style="padding:8px 12px;text-align:right;font-size:13px">${fmtM(l.pxH||0)}</td><td style="padding:8px 12px;text-align:right;font-size:13px;font-weight:700">${fmtM(l.tot)}</td></tr>`).join('')}</tbody>
+    </table>
+    <div style="border-top:2px solid var(--or);padding-top:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="color:var(--tm)">Avance reçue</span><span style="font-weight:600">${fmtM(v.avc||v.tot)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="color:var(--tm)">Reste à payer</span><span style="color:${v.rst>0?'var(--rd)':'var(--gr)'};font-weight:700">${fmtM(v.rst||0)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;margin-top:9px"><span>TOTAL</span><span style="color:var(--or)">${fmtM(v.tot)}</span></div>
+    </div>
+    <div style="margin-top:16px;text-align:center;font-size:11px;color:var(--tm);border-top:1px solid var(--bd);padding-top:11px">${v.stat} · Merci — Gabelle Matériaux de Construction</div>
+  </div>`;
+  openM('m-fac');
+}
+
+function genFactPDF(){
+  const jspdfLib2=window.jspdf||window.jsPDF;
+  if(!jspdfLib2||!jspdfLib2.jsPDF){
+    toast('Bibliothèque PDF non disponible — vérifiez la connexion internet','error');
+    return;
+  }
+  const {jsPDF}=jspdfLib2;const v=currentFac;if(!v){toast('Aucune facture','error');return;}
+  const doc=new jsPDF({unit:'mm',format:'a5'});
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(15,39,68);doc.text('GABELLE',14,16);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);doc.text('MATERIAUX DE CONSTRUCTION — Gonaives, Haiti',14,22);
+  doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(232,98,10);doc.text(v.fac,142,16,'right');
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);doc.text('Date: '+v.date+' '+v.hr,142,22,'right');
+  doc.setFillColor(238,240,244);doc.rect(14,28,128,12,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(15,39,68);doc.text('FACTURE A: '+v.cli,17,34);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);doc.text('Mode: '+v.mod,17,39);
+  const lignes=v.lignes?.length?v.lignes:[{nom:v.prd,q:v.qte,pxH:(v.tot/Math.max(v.qte||1,1)),unite:'',tot:v.tot}];
+  let y=49;doc.setFillColor(15,39,68);doc.rect(14,y,128,7,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);
+  doc.text('Produit',16,y+5);doc.text('Qte',86,y+5,'right');doc.text('Prix',108,y+5,'right');doc.text('Total HTG',142,y+5,'right');y+=8;
+  lignes.forEach(l=>{doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text((l.nom||'').substring(0,30),16,y);doc.text(fmt(l.q)+' '+(l.unite||''),86,y,'right');doc.text(fmtM(l.pxH||0),108,y,'right');doc.setFont('helvetica','bold');doc.text(fmtM(l.tot),142,y,'right');doc.setDrawColor(238,240,244);doc.line(14,y+2,142,y+2);y+=7;});
+  y+=4;doc.setDrawColor(232,98,10);doc.setLineWidth(0.5);doc.line(14,y,142,y);y+=6;
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);
+  doc.text('Avance recue:',100,y,'right');doc.text(fmtM(v.avc||v.tot),142,y,'right');y+=5;
+  doc.setTextColor(v.rst>0?220:22,v.rst>0?38:163,v.rst>0?38:74);
+  doc.text('Reste a payer:',100,y,'right');doc.text(fmtM(v.rst||0),142,y,'right');y+=6;
+  doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(15,39,68);doc.text('TOTAL:',100,y,'right');doc.setTextColor(232,98,10);doc.text(fmtM(v.tot),142,y,'right');
+  y+=10;doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);doc.text('Gabelle Materiaux — Merci de votre confiance !',79,y,'center');
+  doc.save('Facture_'+v.fac+'.pdf');
+  addAudit('Export PDF Facture','Ventes',v.fac);toast('Facture PDF téléchargée ✅','success');
+}
+
+// ── CLIENTS ──
+function renderClients(){
+  const q=(gv('cli-q')||'').toLowerCase();
+  let list=clients;if(q)list=list.filter(c=>c.nom.toLowerCase().includes(q)||(c.tel&&c.tel.includes(q)));
+  const tb=g('cli-tb');if(!tb)return;
+  tb.innerHTML=list.length?list.map(c=>{
+    const pct=Math.min(100,Math.round(((c.cred||0)/Math.max(c.lim||1,1))*100));
+    let bc,bt;if((c.cred||0)===0){bc='bg2';bt='✅ À jour';}else if(pct>=100){bc='brd';bt='🔴 Limite';}else{bc='byw';bt='⚠️ En cours';}
+    return `<tr><td><strong>${c.nom}</strong></td><td>${c.tel||'—'}</td><td class="n" style="color:${(c.cred||0)>0?'var(--rd)':'var(--gr)'}">${fmtM(c.cred||0)}</td><td class="n">${fmtM(c.lim||0)}</td><td style="min-width:90px"><div style="font-size:10px;color:var(--tm);margin-bottom:3px">${pct}%</div><div class="crb"><div class="crf" style="width:${pct}%"></div></div></td><td><span class="badge ${bc}">${bt}</span></td><td style="display:flex;gap:3px;white-space:nowrap">${(c.cred||0)>0?`<button class="btn bxs" style="background:var(--grd);color:#0f7a48" onclick="payerCred('${c.id}')">💰 Payer</button>`:''}<button class="btn bg bxs" onclick="openCF('${c.id}')">✏️</button><button class="btn bwa bxs" onclick="waClient('${c.id}')">📱</button><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="delCli('${c.id}')">🗑</button></td></tr>`;
+  }).join(''):'<tr><td colspan="7"><div class="es"><div class="ei">👥</div><div class="et">Aucun client</div></div></td></tr>';
+}
+function openCF(id){
+  const c=id?clients.find(x=>x.id===id):null;
+  g('clf-id').value=c?.id||'';g('clf-nom').value=c?.nom||'';g('clf-tel').value=c?.tel||'';g('clf-adr').value=c?.adr||'';g('clf-lim').value=c?.lim||'';
+  g('m-cli-t').textContent=c?'✏️ Modifier Client':'👤 Nouveau Client';openM('m-cli');
+}
+function saveCli(){
+  const id=gv('clf-id'),nom=gv('clf-nom').trim();if(!nom){toast('Nom requis','error');return;}
+  const c={id:id||uid(),nom,tel:gv('clf-tel'),adr:gv('clf-adr'),lim:parseFloat(gv('clf-lim'))||100000,cred:id?(clients.find(x=>x.id===id)?.cred||0):0};
+  if(id){const i=clients.findIndex(x=>x.id===id);clients[i]=c;}else clients.push(c);
+  addAudit(id?'Modif. Client':'Ajout Client','Clients',nom);saveAll();closeM('m-cli');renderClients();toast('Client enregistré ✅','success');
+}
+function delCli(id){const c=clients.find(x=>x.id===id);if(!confirm('Supprimer "'+c?.nom+'" ?'))return;clients=clients.filter(x=>x.id!==id);saveAll();renderClients();toast('Supprimé','warning');}
+function payerCred(id){
+  const c=clients.find(x=>x.id===id);if(!c)return;
+  const m=parseFloat(prompt('Paiement — '+c.nom+'\nCrédit: '+fmtM(c.cred)+'\nMontant (HTG):'));
+  if(!m||isNaN(m)||m<=0)return;c.cred=Math.max(0,c.cred-m);
+  addAudit('Paiement Crédit','Clients',c.nom+' — '+fmtM(m));saveAll();renderClients();renderDB();toast(fmtM(m)+' enregistré pour '+c.nom,'success');
+}
+
+// ── CAMIONS ──
+function renderCamions(){
+  const M=new Date().getMonth(),Y=new Date().getFullYear();
+  const mois=camions.filter(c=>c.date&&new Date(c.date).getMonth()===M&&new Date(c.date).getFullYear()===Y);
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('cam-rev',fmt(mois.reduce((s,c)=>s+c.rv,0)));S('cam-cb',fmt(mois.reduce((s,c)=>s+c.cb,0)));
+  S('cam-au',fmt(mois.reduce((s,c)=>s+c.au,0)));S('cam-bn',fmt(mois.reduce((s,c)=>s+c.bn,0)));
+  // Flotte
+  const fg=g('flotte-g');
+  if(fg){
+    const sm={disponible:{c:'bg2',l:'🟢 Disponible',d:'td-d'},en_route:{c:'bor',l:'🟠 En livraison',d:'td-r'},panne:{c:'brd',l:'🔴 En panne',d:'td-p'}};
+    fg.innerHTML=flotte.map(t=>{const s=sm[t.st]||sm.disponible;return`<div style="background:var(--sur2);border-radius:var(--rs);padding:12px;border:1px solid var(--bd)"><div style="font-weight:700;font-size:12px;color:var(--t1);margin-bottom:5px">${t.nom}</div><div style="display:flex;align-items:center;gap:5px;font-size:11px"><span class="tdot ${s.d}"></span><span class="badge ${s.c}" style="font-size:10px">${s.l}</span></div><div style="font-size:10px;color:var(--tm);margin:4px 0">Chauffeur: ${t.ch}</div><div style="display:flex;gap:3px;margin-top:7px"><button class="btn bg bxs" onclick="updFlotte('${t.id}','disponible')">🟢</button><button class="btn bg bxs" onclick="updFlotte('${t.id}','en_route')">🟠</button><button class="btn bg bxs" onclick="updFlotte('${t.id}','panne')">🔴</button></div></div>`;}).join('');}
+  const tb=g('cam-tb');if(!tb)return;
+  tb.innerHTML=[...camions].reverse().map(c=>`<tr><td>${c.date}</td><td><strong>${c.cam}</strong></td><td>${c.ds}</td><td class="n" style="color:var(--gr)">${fmtM(c.rv)}</td><td class="n" style="color:var(--rd)">${fmtM(c.cb)}</td><td class="n" style="color:var(--rd)">${fmtM(c.au)}</td><td>${c.ch}</td><td class="n" style="color:${c.bn>=0?'var(--gr)':'var(--rd)'}"><strong>${fmtM(c.bn)}</strong></td><td style="display:flex;gap:3px"><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="camions=camions.filter(x=>x.id!=='${c.id}');saveAll();renderCamions();">🗑</button><button class="btn bwa bxs" onclick="waChauffeur('${c.ch}','${c.cam}','${c.ds}')">📱</button></td></tr>`).join('')||'<tr><td colspan="9"><div class="es"><div class="ei">🚛</div><div class="et">Aucun voyage</div></div></td></tr>';
+}
+function updFlotte(id,st){const t=flotte.find(x=>x.id===id);if(!t)return;t.st=st;sd('flotte',flotte);renderCamions();toast(t.nom+' → '+st,'info',2000);}
+function saveVoy(){
+  const rv=parseFloat(gv('cv2-rv'))||0,cb=parseFloat(gv('cv2-cb'))||0,au=parseFloat(gv('cv2-au'))||0;
+  const c={id:uid(),date:gv('cv2-dt')||td(),cam:gv('cv2-cam'),cl:gv('cv2-cl'),ds:gv('cv2-ds'),rv,cb,au,ch:gv('cv2-ch'),bn:rv-cb-au};
+  camions.push(c);addAudit('Voyage','Camions',c.cam+' → '+c.ds+' — '+fmtM(c.rv));
+  saveAll();closeM('m-cam');renderCamions();toast('Voyage enregistré ✅','success');
+}
+function saveMaint(){
+  const n=gv('mt-cam'),s=gv('mt-st');const t=flotte.find(x=>x.nom===n);if(t)t.st=s;
+  addAudit('Maintenance','Camions',n+' — '+gv('mt-ty'));saveAll();closeM('m-maint');renderCamions();toast('Maintenance enregistrée ✅','success');
+}
+
+// ── EMPLOYÉS ──
+function renderEmployes(){
+  const actifs=employes.filter(e=>e.actif);const masseSal=actifs.reduce((s,e)=>s+e.sal,0);
+  const M=new Date().getMonth(),Y=new Date().getFullYear();
+  const moisStr=Y+'-'+String(M+1).padStart(2,'0');
+  const paye=paieSal.filter(p=>p.mois===moisStr).reduce((s,p)=>s+p.mt,0);
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('e-tot',actifs.length);S('e-sal',fmt(masseSal));S('e-pay',fmt(paye));S('e-att',fmt(Math.max(0,masseSal-paye)));
+  const ec=g('emp-cards');
+  if(ec)ec.innerHTML=actifs.map(e=>{
+    const salPaye=paieSal.filter(p=>p.eid===e.id&&p.mois===moisStr).reduce((s,p)=>s+p.mt,0);
+    const paid=salPaye>=e.sal*0.9;
+    return`<div class="sal-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:14px;font-weight:700;color:var(--t1)">${e.nom}</div><div style="font-size:11px;color:var(--tm)">${e.post}</div></div><span class="badge ${paid?'bg2':'byw'}">${paid?'✅ Payé':'⏳ Attente'}</span></div><div style="font-size:20px;font-weight:900;color:var(--or);font-family:'Barlow Condensed',sans-serif;margin:10px 0">${fmt(e.sal)} HTG<span style="font-size:12px;color:var(--tm);font-family:Inter,sans-serif">/mois</span></div><div style="display:flex;gap:6px"><button class="btn bp bsm" onclick="openSalF('${e.id}')">💸 Payer</button><button class="btn bwa bxs" onclick="waSalDirect('${e.id}')">📱</button><button class="btn bg bxs" onclick="openEmpF('${e.id}')">✏️</button></div></div>`;
+  }).join('');
+  const tb=g('emp-tb');if(tb)tb.innerHTML=employes.length?employes.map(e=>{
+    const salPaye=paieSal.filter(p=>p.eid===e.id&&p.mois===moisStr).reduce((s,p)=>s+p.mt,0);
+    const paid=salPaye>=e.sal*0.9;
+    return`<tr><td><strong>${e.nom}</strong></td><td>${e.post}</td><td>${e.tel||'—'}</td><td class="n">${fmt(e.sal)} HTG</td><td>${e.type}</td><td><span class="badge ${paid?'bg2':'byw'}">${paid?'✅ Payé':'⏳ Attente'}</span></td><td style="display:flex;gap:3px"><button class="btn bp bxs" onclick="openSalF('${e.id}')">💸</button><button class="btn bg bxs" onclick="openEmpF('${e.id}')">✏️</button><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="employes=employes.filter(x=>x.id!=='${e.id}');saveAll();renderEmployes();">🗑</button></td></tr>`;
+  }).join(''):'<tr><td colspan="7"><div class="es"><div class="ei">👷</div><div class="et">Aucun employé</div></div></td></tr>';
+  const pb=g('paie-tb');if(pb)pb.innerHTML=paieSal.length?[...paieSal].reverse().slice(0,20).map(p=>`<tr><td>${p.dt}</td><td><strong>${p.emp}</strong></td><td>${p.post}</td><td class="n" style="color:var(--gr)">${fmt(p.mt)} HTG</td><td>${p.mod}</td><td>${p.mois}</td></tr>`).join(''):'<tr><td colspan="6"><div class="es" style="padding:12px"><div class="et">Aucun paiement</div></div></td></tr>';
+}
+function openEmpF(id){
+  const e=id&&id!=='null'?employes.find(x=>x.id===id):null;
+  g('ef-id').value=e?.id||'';g('ef-nom').value=e?.nom||'';g('ef-post').value=e?.post||'';g('ef-tel').value=e?.tel||'';g('ef-sal').value=e?.sal||'';
+  if(e)try{g('ef-type').value=e.type;g('ef-dt').value=e.dt||'';}catch(ex){}
+  g('m-emp-t').textContent=e?'✏️ Modifier Employé':'👷 Nouvel Employé';
+  const dt=g('ef-dt');if(dt&&!dt.value)dt.value=td();
+  openM('m-emp');
+}
+function saveEmp(){
+  const id=gv('ef-id'),nom=gv('ef-nom').trim();if(!nom){toast('Nom requis','error');return;}
+  const e={id:id||uid(),nom,post:gv('ef-post'),tel:gv('ef-tel'),sal:parseFloat(gv('ef-sal'))||0,type:gv('ef-type'),dt:gv('ef-dt'),actif:true};
+  if(id){const i=employes.findIndex(x=>x.id===id);employes[i]=e;}else employes.push(e);
+  addAudit(id?'Modif. Employé':'Ajout Employé','RH',nom+' — '+fmt(e.sal)+' HTG/mois');
+  saveAll();closeM('m-emp');renderEmployes();toast('Employé enregistré ✅','success');
+}
+function openSalF(eid){
+  const e=employes.find(x=>x.id===eid);if(!e)return;
+  g('sal-eid').value=eid;
+  g('sal-info').innerHTML=`<strong style="font-size:15px;color:var(--or)">${e.nom}</strong><br><span style="color:var(--tm)">${e.post} · Salaire mensuel: <strong>${fmt(e.sal)} HTG</strong></span>`;
+  g('sal-jrs').value=26;g('sal-avc').value=0;
+  const d=new Date();g('sal-mois').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  calcSal();openM('m-sal');
+}
+function calcSal(){
+  const eid=gv('sal-eid'),e=employes.find(x=>x.id===eid);if(!e)return;
+  const jrs=parseFloat(gv('sal-jrs'))||26,avc=parseFloat(gv('sal-avc'))||0;
+  const net=g('sal-net');if(net)net.value=Math.max(0,Math.round(e.sal*(jrs/26))-avc);
+}
+function paySal(){
+  const eid=gv('sal-eid'),e=employes.find(x=>x.id===eid);if(!e)return;
+  const net=parseFloat(gv('sal-net'))||0;if(!net){toast('Montant invalide','error');return;}
+  paieSal.push({id:uid(),dt:td(),eid,emp:e.nom,post:e.post,mt:net,mod:gv('sal-md'),mois:gv('sal-mois')});
+  addAudit('Paiement Salaire','RH',e.nom+' — '+fmtM(net)+' — '+gv('sal-mois'));
+  saveAll();closeM('m-sal');renderEmployes();toast('Salaire de '+e.nom+' payé: '+fmtM(net)+' ✅','success');
+}
+function payerTous(){
+  if(!confirm('Payer tous les salaires du mois en cours ?'))return;
+  const d=new Date();const mois=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  let total=0;
+  employes.filter(e=>e.actif).forEach(e=>{paieSal.push({id:uid(),dt:td(),eid:e.id,emp:e.nom,post:e.post,mt:e.sal,mod:'Cash',mois});total+=e.sal;});
+  addAudit('Masse Salariale','RH','Total: '+fmtM(total)+' — Mois: '+mois);
+  saveAll();renderEmployes();toast('Masse salariale '+fmtM(total)+' payée ✅','success');
+}
+
+// ── DÉPÔTS ──
+function renderDepots(){
+  const tot=depots.filter(d=>!d.solde).reduce((s,d)=>s+d.mt,0);
+  const att=depots.filter(d=>!d.solde&&d.qRec<d.qPay).length;
+  const sol=depots.filter(d=>d.solde).length;
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('dep-tot',fmt(tot));S('dep-att',att);S('dep-sol',sol);
+  const dc=g('dep-cards');
+  if(dc)dc.innerHTML=depots.filter(d=>!d.solde).slice(0,6).map(d=>`<div class="dep-card"><div style="font-size:14px;font-weight:700;color:var(--t1)">${d.cli}</div><div style="font-size:11px;color:var(--tm)">${d.prd} · ${d.rc||'—'}</div><div style="display:flex;gap:9px;margin-top:12px"><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Payé</div><div style="font-size:16px;font-weight:800;color:var(--gr)">${fmt(d.qPay)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Récupéré</div><div style="font-size:16px;font-weight:800;color:var(--or)">${fmt(d.qRec)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Solde</div><div style="font-size:16px;font-weight:800;color:var(--pu)">${fmt(d.qPay-d.qRec)} ${d.unite}</div></div></div><div style="margin-top:10px;display:flex;gap:6px"><button class="btn bp bsm" onclick="ouvrirRet('${d.id}')">📦 Retrait</button><button class="btn bwa bxs" onclick="waDepotCli('${d.cli}','${d.prd}',${d.qPay-d.qRec},'${d.unite}')">📱</button></div></div>`).join('');
+  const tb=g('dep-tb');if(!tb)return;
+  tb.innerHTML=depots.length?[...depots].reverse().map(d=>`<tr><td>${d.dt}</td><td><strong>${d.cli}</strong></td><td>${d.prd}</td><td class="n" style="color:var(--gr)">${fmt(d.qPay)} ${d.unite}</td><td class="n" style="color:var(--or)">${fmt(d.qRec)} ${d.unite}</td><td class="n" style="color:var(--pu)"><strong>${fmt(d.qPay-d.qRec)} ${d.unite}</strong></td><td class="n">${fmtM(d.mt)}</td><td><span class="badge ${d.solde?'bg2':d.qRec>0?'byw':'bbl'}">${d.solde?'✅ Soldé':d.qRec>0?'⏳ Partiel':'🔒 En attente'}</span></td><td style="display:flex;gap:3px">${!d.solde?`<button class="btn bp bxs" onclick="ouvrirRet('${d.id}')">📦</button>`:''}<button class="btn bwa bxs" onclick="waDepotCli('${d.cli}','${d.prd}',${d.qPay-d.qRec},'${d.unite}')">📱</button></td></tr>`).join(''):'<tr><td colspan="9"><div class="es"><div class="ei">🏛️</div><div class="et">Aucun dépôt enregistré</div></div></td></tr>';
+}
+function saveDepot(){
+  const cid=g('dep-cli')?.value,cl=clients.find(x=>x.id===cid);
+  const pid=g('dep-pr')?.value,pr=prods.find(x=>x.id===pid);
+  const qPay=parseFloat(gv('dep-qt'))||0,mt=parseFloat(gv('dep-mt'))||0;
+  if(!cl||!qPay||!mt){toast('Client, quantité et montant requis','error');return;}
+  const d={id:uid(),dt:gv('dep-dt')||td(),cli:cl.nom,tel:cl.tel,rc:gv('dep-rc'),prd:pr?.nom||'—',unite:pr?.unite||'unité',qPay,qRec:0,mt,md:gv('dep-md'),solde:false};
+  depots.push(d);addAudit('Nouveau Dépôt','Dépôts',d.cli+' — '+d.prd+' — '+fmtM(mt));
+  saveAll();closeM('m-depot');renderDepots();toast('Dépôt enregistré ✅','success');
+}
+function ouvrirRet(id){
+  const d=depots.find(x=>x.id===id);if(!d)return;
+  g('ret-id').value=id;g('ret-qt').value='';
+  g('ret-info').innerHTML=`<strong>${d.cli}</strong> — ${d.prd}<br>Payé: <strong style="color:var(--gr)">${fmt(d.qPay)} ${d.unite}</strong> · Récupéré: <strong style="color:var(--or)">${fmt(d.qRec)} ${d.unite}</strong><br><strong style="color:var(--pu)">Solde disponible: ${fmt(d.qPay-d.qRec)} ${d.unite}</strong>`;
+  openM('m-retrait');
+}
+function saveRet(){
+  const id=gv('ret-id'),d=depots.find(x=>x.id===id);if(!d)return;
+  const q=parseFloat(gv('ret-qt'))||0,dispo=d.qPay-d.qRec;
+  if(!q||q>dispo){toast('Quantité invalide (max: '+fmt(dispo)+' '+d.unite+')','error');return;}
+  d.qRec+=q;if(d.qRec>=d.qPay)d.solde=true;
+  addAudit('Retrait Dépôt','Dépôts',d.cli+' — '+fmt(q)+' '+d.unite);
+  saveAll();closeM('m-retrait');renderDepots();toast('Retrait de '+fmt(q)+' '+d.unite+' enregistré ✅','success');
+}
+
+// ── FOURNISSEURS ──
+function renderFourn(){
+  const tb=g('fo-tb');if(!tb)return;
+  const sm={solde:{c:'bg2',l:'✅ Soldé'},en_cours:{c:'byw',l:'🟡 En cours'},retard:{c:'brd',l:'🔴 En retard'}};
+  tb.innerHTML=fournisseurs.length?fournisseurs.map(f=>{const s=sm[f.st]||{c:'bgy',l:f.st};return`<tr><td><strong>${f.nom}</strong></td><td>${f.tel}</td><td>${f.pr}</td><td class="n">${fmtM(f.tot)}</td><td class="n" style="color:var(--gr)">${fmtM(f.pay)}</td><td class="n" style="color:${f.rst>0?'var(--rd)':'var(--gr)'}"><strong>${fmtM(f.rst)}</strong></td><td><span class="badge ${s.c}">${s.l}</span></td><td style="display:flex;gap:3px"><button class="btn bg bxs" onclick="openFF('${f.id}')">✏️</button><button class="btn bwa bxs" onclick="waFourn('${f.nom}','${f.tel}','${f.rst}')">📱</button><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="fournisseurs=fournisseurs.filter(x=>x.id!=='${f.id}');saveAll();renderFourn();">🗑</button></td></tr>`;}).join(''):'<tr><td colspan="8"><div class="es"><div class="ei">🤝</div><div class="et">Aucun fournisseur</div></div></td></tr>';
+}
+function openFF(id){
+  const f=id?fournisseurs.find(x=>x.id===id):null;
+  g('ff-id').value=f?.id||'';g('ff-nom').value=f?.nom||'';g('ff-tel').value=f?.tel||'';g('ff-pr').value=f?.pr||'';g('ff-vil').value=f?.vil||'';g('ff-tot').value=f?.tot||'';g('ff-pay').value=f?.pay||'';g('ff-ech').value=f?.ech||'';if(f)try{g('ff-st').value=f.st;}catch(e){}
+  g('m-fourn-t').textContent=f?'✏️ Modifier Fournisseur':'🤝 Nouveau Fournisseur';openM('m-fourn');
+}
+function saveFourn(){
+  const id=gv('ff-id'),nom=gv('ff-nom').trim();if(!nom){toast('Nom requis','error');return;}
+  const tot=parseFloat(gv('ff-tot'))||0,pay=parseFloat(gv('ff-pay'))||0;
+  const f={id:id||uid(),nom,tel:gv('ff-tel'),pr:gv('ff-pr'),vil:gv('ff-vil'),tot,pay,rst:Math.max(0,tot-pay),ech:gv('ff-ech'),st:gv('ff-st')};
+  if(id){const i=fournisseurs.findIndex(x=>x.id===id);fournisseurs[i]=f;}else fournisseurs.push(f);
+  addAudit(id?'Modif. Fournisseur':'Ajout Fournisseur','Fournisseurs',nom+' — Reste: '+fmtM(f.rst));
+  saveAll();closeM('m-fourn');renderFourn();toast('Fournisseur enregistré ✅','success');
+}
+
+// ── CAISSE ──
+function renderCaisse(){
+  const D=td();
+  const vj=ventes.filter(v=>v.date===D).reduce((s,v)=>s+v.tot,0);
+  const cj=camions.filter(c=>c.date===D).reduce((s,c)=>s+c.rv,0);
+  const cjC=camions.filter(c=>c.date===D).reduce((s,c)=>s+c.cb,0);
+  const cjA=camions.filter(c=>c.date===D).reduce((s,c)=>s+c.au,0);
+  const te=vj+cj,ts=cjC+cjA;
+  const ce=g('cs-ent');if(ce)ce.innerHTML=`<div class="kr"><span class="kl">Ventes Magasin</span><span class="kv" style="color:var(--gr)">${fmtM(vj)}</span></div><div class="kr"><span class="kl">Revenus Camions</span><span class="kv" style="color:var(--gr)">${fmtM(cj)}</span></div>`;
+  const cs=g('cs-sor');if(cs)cs.innerHTML=`<div class="kr"><span class="kl">Carburant Camions</span><span class="kv" style="color:var(--rd)">${fmtM(cjC)}</span></div><div class="kr"><span class="kl">Autres Dép. Camions</span><span class="kv" style="color:var(--rd)">${fmtM(cjA)}</span></div>`;
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('cs-te',fmtM(te));S('cs-ts',fmtM(ts));S('cs-sth',fmt(te-ts));calcEc();
+}
+function calcEc(){
+  const th=parseFloat(g('cs-sth')?.textContent?.replace(/[^0-9.-]/g,'')||0);
+  const reel=parseFloat(gv('cs-reel')||0);const ec=reel-th;
+  const el=g('cs-ecart');if(!el)return;el.textContent=fmt(ec);
+  el.style.color=ec===0?'var(--gr)':ec>0?'var(--bl)':'var(--rd)';
+  const card=g('cs-ec-card');if(card)card.style.background=ec===0?'var(--grd)':ec>0?'var(--bld)':'var(--rdd)';
+}
+function clotureCaisse(){addAudit('Clôture Caisse','Caisse','Solde théorique: '+(g('cs-sth')?.textContent||'0')+' HTG');saveAll();toast('Caisse clôturée ✅','success');}
+
+// ── RAPPORTS ──
+function renderRapports(){
+  const M=new Date().getMonth(),Y=new Date().getFullYear();
+  const ca=ventes.reduce((s,v)=>s+v.tot,0);
+  const camM=camions.filter(c=>c.date&&new Date(c.date).getMonth()===M&&new Date(c.date).getFullYear()===Y);
+  const camR=camM.reduce((s,c)=>s+c.rv,0),camD=camM.reduce((s,c)=>s+c.cb+c.au,0);
+  const masseSal=employes.filter(e=>e.actif).reduce((s,e)=>s+e.sal,0);
+  const net=ca+camR-camD-masseSal;
+  const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
+  S('rp-ca',fmtM(ca));S('rp-cam',fmtM(camR));S('rp-net',fmtM(net));
+  const ps={};ventes.forEach(v=>{if(!ps[v.prd])ps[v.prd]={q:0,r:0};ps[v.prd].q+=(v.qte||0);ps[v.prd].r+=v.tot;});
+  const top=Object.entries(ps).sort((a,b)=>b[1].r-a[1].r).slice(0,5);
+  const tb=g('rp-top');if(tb)tb.innerHTML=top.length?top.map(([n,d],i)=>`<tr><td style="font-weight:800;color:#f0c040">#${i+1}</td><td>${n}</td><td class="n">${fmt(d.q)}</td><td class="n" style="color:var(--gr)">${fmtM(d.r)}</td></tr>`).join(''):'<tr><td colspan="4"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';
+  const jl=g('rp-jnl');if(jl){const jv=ventes.filter(v=>v.date&&new Date(v.date).getMonth()===M&&new Date(v.date).getFullYear()===Y);jl.innerHTML=jv.length?[...jv].reverse().map(v=>`<tr><td>${v.date}</td><td style="color:var(--or)">${v.fac}</td><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td>${v.mod}</td></tr>`).join(''):'<tr><td colspan="5"><div class="es" style="padding:12px"><div class="et">Aucune vente ce mois</div></div></td></tr>';}
+}
+function genRapportPDF(){
+  const jspdfLib=window.jspdf||window.jsPDF;
+  if(!jspdfLib||!jspdfLib.jsPDF){
+    toast('Bibliothèque PDF non disponible — vérifiez la connexion internet','error');
+    return;
+  }
+  const {jsPDF}=jspdfLib;const doc=new jsPDF({unit:'mm',format:'a4'});
+  const M=new Date().getMonth(),Y=new Date().getFullYear();
+  const mois=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  doc.setFillColor(15,39,68);doc.rect(0,0,210,38,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(255,255,255);doc.text('GABELLE MATERIAUX DE CONSTRUCTION',14,16);
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(200,200,200);doc.text('RAPPORT MENSUEL — '+mois[M].toUpperCase()+' '+Y,14,24);doc.text('Gonaives, Artibonite, Haiti',14,30);
+  const ca=ventes.reduce((s,v)=>s+v.tot,0);
+  const camR=camions.reduce((s,c)=>s+c.rv,0);
+  const masseSal=employes.filter(e=>e.actif).reduce((s,e)=>s+e.sal,0);
+  const camD=camions.reduce((s,c)=>s+c.cb+c.au,0);
+  const net=ca+camR-camD-masseSal;
+  const kpis=[['CA Total Ventes',fmtM(ca)],['Rev. Camions',fmtM(camR)],['Resultat Net',fmtM(net)],['Masse Salariale',fmtM(masseSal)],['Dep. Camions',fmtM(camD)],['Nb Employes',employes.filter(e=>e.actif).length+' actifs']];
+  let y=48;doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(15,39,68);doc.text('INDICATEURS CLES',14,y);y+=8;
+  kpis.forEach((k,i)=>{const x=14+(i%3)*65;if(i===3)y+=22;doc.setFillColor(238,240,244);doc.rect(x,y,60,17,'F');doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100,100,100);doc.text(k[0],x+3,y+6);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(15,39,68);doc.text(k[1],x+3,y+13);});
+  y+=32;doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(15,39,68);doc.text('JOURNAL DES VENTES',14,y);y+=7;
+  doc.setFillColor(15,39,68);doc.rect(14,y,182,7,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);
+  doc.text('Facture',16,y+5);doc.text('Client',42,y+5);doc.text('Produit',80,y+5);doc.text('Total HTG',145,y+5,'right');doc.text('Mode',152,y+5);y+=9;
+  ventes.slice(0,18).forEach(v=>{if(y>265){doc.addPage();y=20;}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text((v.fac||'').substring(0,12),16,y);doc.text((v.cli||'').substring(0,18),42,y);doc.text((v.prd||'').substring(0,22),80,y);doc.setFont('helvetica','bold');doc.text(fmtM(v.tot),145,y,'right');doc.setFont('helvetica','normal');doc.text(v.mod||'',152,y);doc.setDrawColor(238,240,244);doc.line(14,y+2,196,y+2);y+=6;});
+  y+=8;if(y>250){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(15,39,68);doc.text('MASSE SALARIALE',14,y);y+=7;
+  doc.setFillColor(15,39,68);doc.rect(14,y,182,7,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);doc.text('Employe',16,y+5);doc.text('Poste',70,y+5);doc.text('Salaire/Mois',145,y+5,'right');doc.text('Type',162,y+5);y+=9;
+  employes.filter(e=>e.actif).forEach(e=>{if(y>270){doc.addPage();y=20;}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text(e.nom,16,y);doc.text(e.post,70,y);doc.setFont('helvetica','bold');doc.text(fmtM(e.sal),145,y,'right');doc.setFont('helvetica','normal');doc.text(e.type,162,y);doc.setDrawColor(238,240,244);doc.line(14,y+2,196,y+2);y+=6;});
+  y+=5;doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(232,98,10);doc.text('TOTAL MASSE SALARIALE: '+fmtM(masseSal),14,y);
+  const pages=doc.getNumberOfPages();for(let p=1;p<=pages;p++){doc.setPage(p);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);doc.text('Gabelle Materiaux — Rapport Confidentiel',14,290);doc.text('Page '+p+'/'+pages,196,290,'right');}
+  doc.save('Rapport_Mensuel_Gabelle_'+mois[M]+'_'+Y+'.pdf');
+  addAudit('Export Rapport PDF','Rapports',mois[M]+' '+Y);toast('Rapport PDF téléchargé ✅','success');
+}
+
+// ── CONVERTISSEUR ──
+function renderConv(){
+  const tv=g('cv-taux');if(tv)tv.textContent='1 USD = '+CFG.taux.toFixed(2)+' HTG';
+  convH();
+  const tb=g('cv-tb');if(!tb)return;
+  tb.innerHTML=[1,5,10,20,50,100,200,500,1000].map(u=>`<tr><td class="n"><strong>$${u}</strong></td><td class="n" style="color:var(--or)">${fmt(u*CFG.taux)} HTG</td><td class="n">${fmt(u*CFG.taux*10)} HTG</td><td class="n" style="color:var(--bl)">$${(u*10).toFixed(2)}</td></tr>`).join('');
+}
+function convH(){const h=parseFloat(gv('cv-htg'))||0;const eu=g('cv-usd');if(eu)eu.value=h>0?(h/CFG.taux).toFixed(2):'';}
+function convU(){const u=parseFloat(gv('cv-usd'))||0;const eh=g('cv-htg');if(eh)eh.value=u>0?(u*CFG.taux).toFixed(2):'';}
+function updateTaux(){
+  const v=parseFloat(gv('mt-tx')||gv('reg-taux')||'132');
+  if(!v||isNaN(v)){toast('Taux invalide','error');return;}
+  CFG.taux=v;localStorage.setItem('g_tx',v);
+  const el=g('cv-taux');if(el)el.textContent='1 USD = '+v.toFixed(2)+' HTG';
+  addAudit('Modif. Taux','Paramètres','1 USD = '+v+' HTG');
+  closeM('m-taux');renderConv();toast('Taux mis à jour : 1 USD = '+v+' HTG ✅','success');
+}
+
+// ── RÉGLAGES ──
+function applySbColor(color){
+  g('sb').style.background=color;
+}
+function sbColor(color,el){
+  applySbColor(color);localStorage.setItem('g_sbc',color);CFG.sbColor=color;
+  document.querySelectorAll('.cdot,.cdt').forEach(d=>d.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+  // Sync les deux sets de boutons
+  document.querySelectorAll('[onclick*="sbColor"]').forEach(d=>{
+    if(d.getAttribute('onclick')?.includes("'"+color+"'"))d.classList.add('sel');
+  });
+}
+function accentColor(color,el){
+  CFG.accent=color;localStorage.setItem('g_acc',color);
+  document.documentElement.style.setProperty('--or',color);document.documentElement.style.setProperty('--or2',color);
+  document.querySelectorAll('[onclick*="accentColor"]').forEach(d=>d.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+  toast('Couleur accent mise à jour ✅','success',2000);
+}
+function saveReglages(){
+  const wa=gv('reg-wa');if(wa){CFG.wa=wa;localStorage.setItem('g_wa',wa);}
+  const pin=gv('reg-pin');if(pin&&pin.length>=4){CFG.pin=pin;localStorage.setItem('g_pin',pin);}
+  const taux=parseFloat(gv('reg-taux'));if(taux&&!isNaN(taux)){CFG.taux=taux;localStorage.setItem('g_tx',taux);}
+  addAudit('Réglages sauvegardés','Paramètres','Config mise à jour');saveAll();toast('Réglages sauvegardés ✅','success');
+}
+
+// ── AUDIT ──
+function renderAudit(){
+  const tb=g('aud-tb');if(!tb)return;
+  const mc={Ventes:'bg2',Stock:'bbl',Achats:'byw',Camions:'bor',RBAC:'brd',Caisse:'bpu',Clients:'bgy',Auth:'bgy',RH:'brd',Paramètres:'bgy',Vitrine:'bg2',Dépôts:'bpu'};
+  tb.innerHTML=audit.slice(0,150).map(a=>`<tr><td style="font-size:11px;white-space:nowrap">${a.ts}</td><td><strong>${a.usr}</strong></td><td><span class="badge bgy">${a.role}</span></td><td>${a.action}</td><td><span class="badge ${mc[a.mod]||'bgy'}">${a.mod}</span></td><td style="font-size:11px;color:var(--tm)">${a.det}</td></tr>`).join('')||'<tr><td colspan="6"><div class="es"><div class="et">Journal vide</div></div></td></tr>';
+}
+function showAlerts(){
+  const al=prods.filter(p=>p.stock<=p.min);
+  toast(al.length?'🚨 '+al.length+' alerte(s) stock : '+al.map(p=>p.nom).slice(0,3).join(', ')+'…':'✅ Aucune alerte — tout est en ordre',al.length?'warning':'success',5000);
+}
+
+// ── WHATSAPP (tous fonctionnels) ──
+function waOpen(tel,msg){
+  const t=(tel||'').replace(/[^0-9]/g,'');
+  if(t.length<8){toast('Numéro de téléphone invalide','error');return;}
+  window.open('https://wa.me/'+t+'?text='+encodeURIComponent(msg),'_blank');
+  addAudit('WhatsApp envoyé','WhatsApp',t);
+}
+function waGeneral(){window.open('https://wa.me/'+CFG.wa+'?text='+encodeURIComponent('Bonjou Gabelle ! 👋\n\nNou vle kòmande materyèl de construction.\n📍 Gonaïves, Haïti\n\nMèsi !'),'_blank');}
+function waCmd(nom,qtyId,prix){
+  const q=parseFloat(g(qtyId)?.value)||1;
+  waOpen(CFG.wa,'Bonjou Gabelle ! 👋\n\nMwen vle kòmande:\n📦 *'+nom+'*\n📊 Quantité: '+q+'\n💰 Total: '+fmtM(q*prix)+'\n\nPouvez-vous confirmer la disponibilité ?\nMèsi !');
+}
+function waConfirm(){
+  const cid=gv('v-cli'),c=clients.find(x=>x.id===cid);
+  if(!c?.tel){toast('Client avec numéro de téléphone requis','error');return;}
+  const tot=panier.reduce((s,l)=>s+l.tot,0);
+  const items=panier.map(l=>'• '+l.nom+': '+fmt(l.q)+' '+l.unite+' — '+fmtM(l.tot)).join('\n');
+  waOpen(c.tel,'Bonjou *'+c.nom+'* 👋\n\n✅ *Vente Gabelle Konfime !*\n\n📦 Atik yo:\n'+items+'\n\n💰 *Total: '+fmtM(tot)+'*\n\nMèsi ! — *Gabelle Matériaux* 🏗');
+}
+function waFac(){
+  if(!currentFac)return;
+  const c=clients.find(x=>x.id===currentFac.cid);
+  if(!c?.tel){toast('Numéro manquant pour ce client','error');return;}
+  waOpen(c.tel,'Bonjou *'+currentFac.cli+'* 👋\n\n🧾 *Facture '+currentFac.fac+'*\n📅 '+currentFac.date+'\n📦 '+currentFac.prd+'\n💰 *'+fmtM(currentFac.tot)+'*'+(currentFac.rst>0?'\n⏳ Reste: '+fmtM(currentFac.rst):'')+'\n\nMèsi ! — *Gabelle* 🏗');
+}
+function waVente(id){
+  const v=ventes.find(x=>x.id===id);if(!v)return;
+  const c=clients.find(x=>x.id===v.cid);if(!c?.tel){toast('Numéro manquant','error');return;}
+  waOpen(c.tel,'Bonjou *'+v.cli+'* 👋\n\n✅ Facture *'+v.fac+'*\n💰 *'+fmtM(v.tot)+'*'+(v.rst>0?'\n⏳ Reste: '+fmtM(v.rst):'')+'\n\nMèsi ! — *Gabelle* 🏗');
+}
+function waClient(id){
+  const c=clients.find(x=>x.id===id);if(!c?.tel)return;
+  waOpen(c.tel,'Bonjou *'+c.nom+'* 👋\n\n'+((c.cred||0)>0?'⚠️ *Kredi ou a: '+fmtM(c.cred)+'*\n\nMèsi vin regle sa.':'✅ Kont ou an règ nan Gabelle.')+'\n\n— *Gabelle Matériaux* 📍 Gonaïves');
+}
+function waChauffeur(ch,cam,dst){window.open('https://wa.me/?text='+encodeURIComponent('🚛 *GABELLE — Mission*\n\nChauffeur: *'+ch+'*\nCamion: '+cam+'\n📍 Destination: *'+dst+'*\n\nBòn wout ! — *Gabelle* 🏗'),'_blank');}
+function waSalDirect(eid){
+  const e=employes.find(x=>x.id===eid);if(!e?.tel){toast('Numéro manquant pour cet employé','error');return;}
+  waOpen(e.tel,'Bonjou *'+e.nom+'* 👋\n\n💸 *Salè ou a ap tann ou !*\n💰 *'+fmt(e.sal)+' HTG/mois*\n\nPasé nan biwo Gabelle.\nMèsi ! — *Gabelle* 🏗');
+}
+function waSalPay(){
+  const eid=gv('sal-eid'),e=employes.find(x=>x.id===eid);
+  if(!e?.tel){toast('Numéro manquant','error');return;}
+  waOpen(e.tel,'Bonjou *'+e.nom+'* 👋\n\n✅ *Salè ou a peye !*\n💰 *'+fmtM(parseFloat(gv('sal-net'))||0)+'*\nMode: '+gv('sal-md')+'\nMois: '+gv('sal-mois')+'\n\nMèsi pou travay ou ! — *Gabelle* 🏗');
+}
+function waDepotConf(){
+  const cid=g('dep-cli')?.value,c=clients.find(x=>x.id===cid);if(!c?.tel)return;
+  const pr=g('dep-pr')?.options[g('dep-pr')?.selectedIndex]?.text||'—';
+  waOpen(c.tel,'Bonjou *'+c.nom+'* 👋\n\n🏛️ *Dépôt Gabelle Konfime !*\n📦 Produit: *'+pr+'*\n📊 Quantité: *'+gv('dep-qt')+'*\n💰 Montant: *'+fmtM(parseFloat(gv('dep-mt'))||0)+'*\n\n✅ Machandiz ou yo nan depo a !\n\nMèsi ! — *Gabelle* 🏗');
+}
+function waDepotCli(cli,prd,reste,unite){
+  const c=clients.find(x=>x.nom===cli);if(!c?.tel)return;
+  waOpen(c.tel,'Bonjou *'+cli+'* 👋\n\n🏛️ *Rapèl Dépôt Gabelle*\n📦 '+prd+'\n📊 *Solde: '+fmt(reste)+' '+unite+'*\n\nOu ka vin pran yo nenpòt ki lè.\nMèsi ! — *Gabelle* 🏗');
+}
+function waRetrait(){
+  const id=gv('ret-id'),d=depots.find(x=>x.id===id);if(!d)return;
+  const c=clients.find(x=>x.nom===d.cli);if(!c?.tel)return;
+  waOpen(c.tel,'Bonjou *'+d.cli+'* 👋\n\n✅ *Retrait Konfime !*\n📦 '+d.prd+'\n📊 Quantité: *'+gv('ret-qt')+' '+d.unite+'*\n\nMèsi ! — *Gabelle* 🏗');
+}
+function waFourn(nom,tel,rst){
+  if(!tel||tel==='—'){toast('Numéro manquant','error');return;}
+  waOpen(tel,'Bonjou *'+nom+'* 👋\n\nNou konfime rès pèman: *'+fmtM(rst)+'*\n\nNou pral regle sa byento.\nMèsi ! — *Gabelle* 🏗');
+}
+
+// ── EXPORT ──
+function expCSV(data,name){
+  if(!data?.length){toast('Aucune donnée — ajoutez des données d\'abord','warning');return;}
+  try{
+    // Filtrer les clés utiles (pas les objets imbriqués trop complexes)
+    const sample=data[0];
+    const H=Object.keys(sample).filter(k=>typeof sample[k]!=='object'||sample[k]===null||Array.isArray(sample[k]));
+    const rows=data.map(r=>H.map(h=>{const v=r[h];return typeof v==='object'?JSON.stringify(v??''):JSON.stringify(v??'');}).join(','));
+    const csv='\uFEFF'+[H.join(','),...rows].join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='Gabelle_'+name+'_'+td()+'.csv';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},200);
+    toast(name+' exporté ✅','success');
+  }catch(e){toast('Erreur export: '+e.message,'error');}
+}
+function backupAll(){
+  const all={prods,ventes,achats,camions,clients,fournisseurs,employes,paieSal,depots,audit};
+  const blob=new Blob([JSON.stringify(all,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='Gabelle_Backup_'+td()+'.json';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},200);
+  toast('Backup complet téléchargé ✅','success');
+}
+function resetAll(){
+  if(!confirm('⚠️ DANGER ! Effacer TOUTES les données ?'))return;
+  if(!confirm('Confirmation finale — IRRÉVERSIBLE !'))return;
+  ['prods','ventes','achats','camions','clients','fournisseurs','employes','paieSal','depots','audit','flotte'].forEach(k=>localStorage.removeItem('g_'+k));
+  toast('Réinitialisé. Rechargez la page.','warning',6000);
+}
+
+// ── IMAGE PRODUIT GALERIE ──
+function previewProdImg(input){
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const url=e.target.result;
+    const inp=g('pf-img');if(inp)inp.value='';
+    // Stocker base64 dans data attribute
+    if(inp)inp.setAttribute('data-b64',url);
+    const pv=g('pf-img-preview'),pi=g('pf-img-prev-img');
+    if(pv&&pi){pi.src=url;pv.style.display='block';}
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+function previewProdImgUrl(url){
+  const pv=g('pf-img-preview'),pi=g('pf-img-prev-img');
+  const inp=g('pf-img');if(inp)inp.removeAttribute('data-b64');
+  if(url&&pv&&pi){pi.src=url;pv.style.display='block';}
+  else if(pv)pv.style.display='none';
+}
+
+// ── LOGO GALERIE ──
+function changeLogo(input){
+  if(!input.files||!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const url=e.target.result;
+    // Mettre à jour toutes les images logo dans la page
+    document.querySelectorAll('img[src*="__LOGO__"], #logo-preview, .sbh img, .ll img').forEach(img=>img.src=url);
+    localStorage.setItem('g_logo',url);
+    toast('Logo mis à jour ✅ (valable jusqu\'à rechargement de la page)','success');
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+
+// ── PWA MANIFEST & INSTALL ──
+(function(){
+  // Créer le manifest dynamiquement
+  const manifest={
+    name:"Gabelle Matériaux de Construction",
+    short_name:"Gabelle",
+    description:"Gestion & Boutique Gabelle Matériaux — Gonaïves, Haïti",
+    start_url:"./",
+    display:"standalone",
+    background_color:"#0a1628",
+    theme_color:"#0f2744",
+    orientation:"portrait-primary",
+    icons:[
+      {src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='90' fill='%230f2744'/><text y='300' x='256' text-anchor='middle' font-size='280' font-family='Arial Black,sans-serif' font-weight='900' fill='%23e8620a'>G</text><text y='390' x='256' text-anchor='middle' font-size='70' font-family='Arial,sans-serif' font-weight='700' letter-spacing='4' fill='%23ffffff'>GABELLE</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}
+    ]
+  };
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.getElementById('pwa-manifest-link')||document.createElement('link');
+  link.rel='manifest';link.href=url;
+  if(!document.getElementById('pwa-manifest-link'))document.head.appendChild(link);
+})();
+
+let pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();pwaPrompt=e;
+  if(!localStorage.getItem('pwa_dismissed')){
+    setTimeout(()=>document.getElementById('pwa-banner')?.classList.add('show'),2000);
+  }
+});
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('pwa-banner')?.classList.remove('show');
+  toast('Gabelle installé sur votre écran d\'accueil ✅','success');
+});
+function installPWA(){
+  if(pwaPrompt){pwaPrompt.prompt();pwaPrompt.userChoice.then(r=>{if(r.outcome==='accepted'){document.getElementById('pwa-banner')?.classList.remove('show');}pwaPrompt=null;});}
+  else{
+    // iOS — pas de prompt natif, montrer instructions
+    toast('Sur iPhone: bouton Partager ↑ → "Sur l\'écran d\'accueil"','info',6000);
+  }
+}
+function dismissPWA(){
+  document.getElementById('pwa-banner')?.classList.remove('show');
+  localStorage.setItem('pwa_dismissed','1');
+}
+
+// ── OFFLINE + AUTO-SAVE ──
+window.addEventListener('offline',()=>toast('⚡ Mode Offline — données sécurisées localement','warning'));
+window.addEventListener('online',()=>{saveAll();toast('🌐 Reconnecté — données synchronisées ✅','success');});
+setInterval(()=>{if(CFG.role)saveAll();},90000);
+
+// Appliquer thème initial
+document.documentElement.setAttribute('data-theme',localStorage.getItem('g_th')||'dark');
+// Restore custom logo if saved
+(function(){const saved=localStorage.getItem('g_logo');if(saved){document.querySelectorAll('img[src*="__LOGO__"]').forEach(img=>img.src=saved);}})();
+// Réglages taux initial dans le convertisseur
+document.addEventListener('DOMContentLoaded',()=>{const r=g('reg-taux');if(r)r.value=CFG.taux;});
+</script>
+</body>
+</html>
