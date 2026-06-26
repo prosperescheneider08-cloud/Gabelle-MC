@@ -1063,7 +1063,7 @@ function nt(){return new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minut
 function nf(){facNum++;localStorage.setItem('g_fn',facNum);supaSave('facNum',facNum);return'FAC-'+String(facNum).padStart(3,'0');}
 function addAudit(action,mod,det){
   audit.unshift({id:uid(),ts:new Date().toLocaleString('fr-FR'),usr:CFG.role==='admin'?'Admin Gabelle':'Client',role:CFG.role||'—',action,mod,det});
-  if(audit.length>500)audit=audit.slice(0,500);sd('audit',audit);
+  if(audit.length>9999)audit=audit.slice(0,9999);sd('audit',audit);
 }
 
 // ── TOAST ──
@@ -1307,7 +1307,7 @@ function renderDB(){
   const at=g('db-al');if(at)at.innerHTML=al.length?al.map(p=>`<tr><td><strong>${p.nom}</strong></td><td class="n" style="color:${p.stock===0?'var(--rd)':'var(--yw)'}">${fmt(p.stock)}</td><td><span class="badge ${p.stock===0?'brd':'byw'}">${p.stock===0?'🔴 Rupture':'⚠️ Faible'}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:14px"><div class="et">✅ Stocks OK</div></div></td></tr>';
   const ndot=g('ndot');if(ndot)ndot.style.display=al.length?'':'none';
   // Dernières ventes
-  const lv=g('db-lv');if(lv){const l=[...ventes].slice(-5).reverse();lv.innerHTML=l.length?l.map(v=>`<tr><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';}
+  const lv=g('db-lv');if(lv){const l=[...ventes].slice(-20).reverse();lv.innerHTML=l.length?l.map(v=>`<tr><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';}
   // Flotte
   const fl=g('db-fl');if(fl){const grp={};camM.forEach(c=>{if(!grp[c.cam])grp[c.cam]={v:0,b:0};grp[c.cam].v++;grp[c.cam].b+=c.bn;});fl.innerHTML=Object.keys(grp).length?Object.entries(grp).map(([n,d])=>`<tr><td style="font-size:12px">${n}</td><td>${d.v}</td><td class="n" style="color:var(--gr)">${fmtM(d.b)}</td></tr>`).join(''):'<tr><td colspan="3"><div class="es" style="padding:12px"><div class="et">Aucun voyage ce mois</div></div></td></tr>';}
 }
@@ -1404,7 +1404,7 @@ function confirmerVente(){
 }
 function renderVJour(){
   const tb=g('v-jour');if(!tb)return;
-  const l=ventes.filter(v=>v.date===td()).reverse().slice(0,8);
+  const l=ventes.filter(v=>v.date===td()).reverse();
   tb.innerHTML=l.length?l.map(v=>`<tr><td>${v.hr||'—'}</td><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td>${v.mod}</td><td><span class="badge ${v.rst>0?'byw':'bg2'}">${v.stat}</span></td></tr>`).join(''):'<tr><td colspan="5"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';
 }
 function toggleHistV(){const c=g('hist-v-card');if(c){c.style.display=c.style.display==='none'?'':'none';renderHistV();}}
@@ -1547,7 +1547,7 @@ function renderEmployes(){
     const paid=salPaye>=e.sal*0.9;
     return`<tr><td><strong>${e.nom}</strong></td><td>${e.post}</td><td>${e.tel||'—'}</td><td class="n">${fmt(e.sal)} HTG</td><td>${e.type}</td><td><span class="badge ${paid?'bg2':'byw'}">${paid?'✅ Payé':'⏳ Attente'}</span></td><td style="display:flex;gap:3px"><button class="btn bp bxs" onclick="openSalF('${e.id}')">💸</button><button class="btn bg bxs" onclick="openEmpF('${e.id}')">✏️</button><button class="btn bxs" style="background:var(--rdd);color:#b91c1c" onclick="employes=employes.filter(x=>x.id!=='${e.id}');saveAll();renderEmployes();">🗑</button></td></tr>`;
   }).join(''):'<tr><td colspan="7"><div class="es"><div class="ei">👷</div><div class="et">Aucun employé</div></div></td></tr>';
-  const pb=g('paie-tb');if(pb)pb.innerHTML=paieSal.length?[...paieSal].reverse().slice(0,20).map(p=>`<tr><td>${p.dt}</td><td><strong>${p.emp}</strong></td><td>${p.post}</td><td class="n" style="color:var(--gr)">${fmt(p.mt)} HTG</td><td>${p.mod}</td><td>${p.mois}</td></tr>`).join(''):'<tr><td colspan="6"><div class="es" style="padding:12px"><div class="et">Aucun paiement</div></div></td></tr>';
+  const pb=g('paie-tb');if(pb)pb.innerHTML=paieSal.length?[...paieSal].reverse().slice(0,200).map(p=>`<tr><td>${p.dt}</td><td><strong>${p.emp}</strong></td><td>${p.post}</td><td class="n" style="color:var(--gr)">${fmt(p.mt)} HTG</td><td>${p.mod}</td><td>${p.mois}</td></tr>`).join(''):'<tr><td colspan="6"><div class="es" style="padding:12px"><div class="et">Aucun paiement</div></div></td></tr>';
 }
 function openEmpF(id){
   const e=id&&id!=='null'?employes.find(x=>x.id===id):null;
@@ -1601,7 +1601,7 @@ function renderDepots(){
   const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
   S('dep-tot',fmt(tot));S('dep-att',att);S('dep-sol',sol);
   const dc=g('dep-cards');
-  if(dc)dc.innerHTML=depots.filter(d=>!d.solde).slice(0,6).map(d=>`<div class="dep-card"><div style="font-size:14px;font-weight:700;color:var(--t1)">${d.cli}</div><div style="font-size:11px;color:var(--tm)">${d.prd} · ${d.rc||'—'}</div><div style="display:flex;gap:9px;margin-top:12px"><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Payé</div><div style="font-size:16px;font-weight:800;color:var(--gr)">${fmt(d.qPay)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Récupéré</div><div style="font-size:16px;font-weight:800;color:var(--or)">${fmt(d.qRec)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Solde</div><div style="font-size:16px;font-weight:800;color:var(--pu)">${fmt(d.qPay-d.qRec)} ${d.unite}</div></div></div><div style="margin-top:10px;display:flex;gap:6px"><button class="btn bp bsm" onclick="ouvrirRet('${d.id}')">📦 Retrait</button><button class="btn bwa bxs" onclick="waDepotCli('${d.cli}','${d.prd}',${d.qPay-d.qRec},'${d.unite}')">📱</button></div></div>`).join('');
+  if(dc)dc.innerHTML=depots.filter(d=>!d.solde).map(d=>`<div class="dep-card"><div style="font-size:14px;font-weight:700;color:var(--t1)">${d.cli}</div><div style="font-size:11px;color:var(--tm)">${d.prd} · ${d.rc||'—'}</div><div style="display:flex;gap:9px;margin-top:12px"><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Payé</div><div style="font-size:16px;font-weight:800;color:var(--gr)">${fmt(d.qPay)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Récupéré</div><div style="font-size:16px;font-weight:800;color:var(--or)">${fmt(d.qRec)} ${d.unite}</div></div><div style="flex:1;background:var(--sur2);border-radius:var(--rs);padding:9px;text-align:center"><div style="font-size:9px;color:var(--tm);text-transform:uppercase">Solde</div><div style="font-size:16px;font-weight:800;color:var(--pu)">${fmt(d.qPay-d.qRec)} ${d.unite}</div></div></div><div style="margin-top:10px;display:flex;gap:6px"><button class="btn bp bsm" onclick="ouvrirRet('${d.id}')">📦 Retrait</button><button class="btn bwa bxs" onclick="waDepotCli('${d.cli}','${d.prd}',${d.qPay-d.qRec},'${d.unite}')">📱</button></div></div>`).join('');
   const tb=g('dep-tb');if(!tb)return;
   tb.innerHTML=depots.length?[...depots].reverse().map(d=>`<tr><td>${d.dt}</td><td><strong>${d.cli}</strong></td><td>${d.prd}</td><td class="n" style="color:var(--gr)">${fmt(d.qPay)} ${d.unite}</td><td class="n" style="color:var(--or)">${fmt(d.qRec)} ${d.unite}</td><td class="n" style="color:var(--pu)"><strong>${fmt(d.qPay-d.qRec)} ${d.unite}</strong></td><td class="n">${fmtM(d.mt)}</td><td><span class="badge ${d.solde?'bg2':d.qRec>0?'byw':'bbl'}">${d.solde?'✅ Soldé':d.qRec>0?'⏳ Partiel':'🔒 En attente'}</span></td><td style="display:flex;gap:3px">${!d.solde?`<button class="btn bp bxs" onclick="ouvrirRet('${d.id}')">📦</button>`:''}<button class="btn bwa bxs" onclick="waDepotCli('${d.cli}','${d.prd}',${d.qPay-d.qRec},'${d.unite}')">📱</button></td></tr>`).join(''):'<tr><td colspan="9"><div class="es"><div class="ei">🏛️</div><div class="et">Aucun dépôt enregistré</div></div></td></tr>';
 }
@@ -1682,7 +1682,7 @@ function renderRapports(){
   const S=(id,v)=>{const el=g(id);if(el)el.textContent=v;};
   S('rp-ca',fmtM(ca));S('rp-cam',fmtM(camR));S('rp-net',fmtM(net));
   const ps={};ventes.forEach(v=>{if(!ps[v.prd])ps[v.prd]={q:0,r:0};ps[v.prd].q+=(v.qte||0);ps[v.prd].r+=v.tot;});
-  const top=Object.entries(ps).sort((a,b)=>b[1].r-a[1].r).slice(0,5);
+  const top=Object.entries(ps).sort((a,b)=>b[1].r-a[1].r).slice(0,50);
   const tb=g('rp-top');if(tb)tb.innerHTML=top.length?top.map(([n,d],i)=>`<tr><td style="font-weight:800;color:#f0c040">#${i+1}</td><td>${n}</td><td class="n">${fmt(d.q)}</td><td class="n" style="color:var(--gr)">${fmtM(d.r)}</td></tr>`).join(''):'<tr><td colspan="4"><div class="es" style="padding:12px"><div class="et">Aucune vente</div></div></td></tr>';
   const jl=g('rp-jnl');if(jl){const jv=ventes.filter(v=>v.date&&new Date(v.date).getMonth()===M&&new Date(v.date).getFullYear()===Y);jl.innerHTML=jv.length?[...jv].reverse().map(v=>`<tr><td>${v.date}</td><td style="color:var(--or)">${v.fac}</td><td>${v.cli}</td><td class="n">${fmtM(v.tot)}</td><td>${v.mod}</td></tr>`).join(''):'<tr><td colspan="5"><div class="es" style="padding:12px"><div class="et">Aucune vente ce mois</div></div></td></tr>';}
 }
@@ -1709,7 +1709,7 @@ function genRapportPDF(){
   y+=32;doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(15,39,68);doc.text('JOURNAL DES VENTES',14,y);y+=7;
   doc.setFillColor(15,39,68);doc.rect(14,y,182,7,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);
   doc.text('Facture',16,y+5);doc.text('Client',42,y+5);doc.text('Produit',80,y+5);doc.text('Total HTG',145,y+5,'right');doc.text('Mode',152,y+5);y+=9;
-  ventes.slice(0,18).forEach(v=>{if(y>265){doc.addPage();y=20;}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text((v.fac||'').substring(0,12),16,y);doc.text((v.cli||'').substring(0,18),42,y);doc.text((v.prd||'').substring(0,22),80,y);doc.setFont('helvetica','bold');doc.text(fmtM(v.tot),145,y,'right');doc.setFont('helvetica','normal');doc.text(v.mod||'',152,y);doc.setDrawColor(238,240,244);doc.line(14,y+2,196,y+2);y+=6;});
+  ventes.forEach(v=>{if(y>265){doc.addPage();y=20;}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text((v.fac||'').substring(0,12),16,y);doc.text((v.cli||'').substring(0,18),42,y);doc.text((v.prd||'').substring(0,22),80,y);doc.setFont('helvetica','bold');doc.text(fmtM(v.tot),145,y,'right');doc.setFont('helvetica','normal');doc.text(v.mod||'',152,y);doc.setDrawColor(238,240,244);doc.line(14,y+2,196,y+2);y+=6;});
   y+=8;if(y>250){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(15,39,68);doc.text('MASSE SALARIALE',14,y);y+=7;
   doc.setFillColor(15,39,68);doc.rect(14,y,182,7,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(255,255,255);doc.text('Employe',16,y+5);doc.text('Poste',70,y+5);doc.text('Salaire/Mois',145,y+5,'right');doc.text('Type',162,y+5);y+=9;
   employes.filter(e=>e.actif).forEach(e=>{if(y>270){doc.addPage();y=20;}doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(50,50,50);doc.text(e.nom,16,y);doc.text(e.post,70,y);doc.setFont('helvetica','bold');doc.text(fmtM(e.sal),145,y,'right');doc.setFont('helvetica','normal');doc.text(e.type,162,y);doc.setDrawColor(238,240,244);doc.line(14,y+2,196,y+2);y+=6;});
