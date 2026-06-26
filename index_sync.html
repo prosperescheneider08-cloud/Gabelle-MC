@@ -968,8 +968,8 @@ const DEF_FLOTTE = [
 // ══════════════════════════════════════════
 // SUPABASE CONFIG — remplacer par vos clés
 // ══════════════════════════════════════════
-const SUPA_URL = 'https://sidzqqznppfryrxcjexl.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNpZHpxcXpucHBmcnlyeGNqZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNTI1OTMsImV4cCI6MjA5NzkyODU5M30.8gGpuZ1iN13FDZnmpTzzZAcqURz3m6ky5uFhcpPMqoM';
+const SUPABASE_URL = 'https://sidzqqznppfryrxcjexl.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_SvJyDe-v0cLFdZig-KQ1pw_T_JbpsZa';
 let _supa = null;
 try { _supa = supabase.createClient(SUPA_URL, SUPA_KEY); } catch(e){ console.warn('Supabase init failed',e); }
 
